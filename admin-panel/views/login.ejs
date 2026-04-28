@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | CrmOne</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body class="page auth-page">
+    <main class="auth-shell">
+      <section class="auth-left">
+        <div class="auth-left__shapes" aria-hidden="true">
+          <span class="auth-left__shape--one"></span>
+          <span class="auth-left__shape--two"></span>
+          <span class="auth-left__shape--three"></span>
+        </div>
+
+        <div class="auth-copy">
+          <a href="/api/login" class="brand">
+            <span class="brand__logo">Crm<span class="brand__dot">●</span>One</span>
+            <span class="brand__tag">One Stop Solutions</span>
+          </a>
+
+          <p class="auth-kicker">Welcome back</p>
+          <h1 class="auth-title">Login to your account</h1>
+
+          <% if (typeof manualError !== "undefined" && manualError) { %>
+            <div class="alert-error"><%= manualError %></div>
+          <% } %>
+
+          <% if (errorMessages.length) { %>
+            <div class="alert-error"><%= errorMessages[0] %></div>
+          <% } %>
+
+          <% if (successMessages.length) { %>
+            <div class="alert-success"><%= successMessages[0] %></div>
+          <% } %>
+
+          <form action="/api/login" method="POST" class="auth-form">
+            <div class="field">
+              <label for="email">Email *</label>
+              <div class="input-shell">
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value="<%= form.email %>"
+                  class="input"
+                  placeholder="admin@crmone.com"
+                  required
+                />
+                <svg class="input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5v-9Z" stroke="currentColor" stroke-width="1.7" />
+                  <path d="m6.5 7 5.5 4 5.5-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="password">Password *</label>
+              <div class="input-shell">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  class="input"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button type="button" class="toggle-btn" data-toggle-password="password" aria-label="Toggle password visibility">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.7" />
+                    <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="field-row">
+              <span></span>
+              <a href="#" class="link-muted">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-primary">Login</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="auth-right" aria-hidden="true">
+        <div class="auth-illustration">
+          <svg viewBox="0 0 720 680" role="img" aria-label="Business meeting illustration">
+            <rect x="0" y="0" width="720" height="680" fill="#F4F6F8" />
+            <circle cx="120" cy="120" r="52" fill="#DDEEFF" />
+            <circle cx="606" cy="100" r="36" fill="#E8F2FF" />
+            <circle cx="642" cy="528" r="62" fill="#E4F4EE" />
+            <path d="M120 70h420a28 28 0 0 1 28 28v10H92v-10a28 28 0 0 1 28-28Z" fill="#E9EEF5" />
+            <path d="M92 108h476v10H92z" fill="#CDD8E6" />
+            <rect x="180" y="180" width="340" height="32" rx="16" fill="#FFFFFF" />
+            <rect x="196" y="268" width="260" height="22" rx="11" fill="#DDE8F2" />
+            <rect x="196" y="304" width="200" height="22" rx="11" fill="#DDE8F2" />
+            <rect x="468" y="252" width="110" height="204" rx="18" fill="#FFFFFF" />
+            <rect x="190" y="448" width="360" height="42" rx="21" fill="#E5EEF6" />
+            <rect x="212" y="490" width="320" height="14" rx="7" fill="#D0DCE8" />
+
+            <rect x="232" y="332" width="184" height="88" rx="20" fill="#1A1A2E" />
+            <rect x="254" y="352" width="116" height="50" rx="10" fill="#29ABE2" />
+            <circle cx="260" cy="416" r="16" fill="#7F8C8D" />
+            <circle cx="340" cy="416" r="16" fill="#7F8C8D" />
+            <path d="M236 420h180" stroke="#C9D6E3" stroke-width="10" stroke-linecap="round" />
+
+            <circle cx="410" cy="320" r="48" fill="#F6D7C7" />
+            <path d="M383 338c10-24 42-24 54 0v54h-54z" fill="#F26522" />
+            <path d="M392 298c13-18 40-15 52 2 8 12 8 28 0 41-7 11-20 18-34 19" fill="#29ABE2" />
+            <path d="M428 356l38 52" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round" />
+            <path d="M402 356l-26 46" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round" />
+
+            <circle cx="500" cy="254" r="44" fill="#F6D7C7" />
+            <path d="M470 250c10-16 35-24 58-18 8 2 15 8 19 16 4 7 5 16 3 24-5 17-19 30-37 34" fill="#1A1A2E" />
+            <path d="M486 296l-32 52" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round" />
+            <path d="M512 296l32 52" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round" />
+            <rect x="520" y="292" width="120" height="10" rx="5" fill="#29ABE2" transform="rotate(-18 520 292)" />
+            <rect x="524" y="350" width="118" height="8" rx="4" fill="#7F8C8D" transform="rotate(12 524 350)" />
+
+            <rect x="76" y="530" width="118" height="92" rx="24" fill="#FFFFFF" />
+            <rect x="104" y="554" width="62" height="16" rx="8" fill="#29ABE2" />
+            <rect x="110" y="578" width="46" height="12" rx="6" fill="#D0DCE8" />
+            <path d="M100 622v-16l26-18 24 18v16" fill="#1A1A2E" />
+
+            <rect x="550" y="532" width="76" height="104" rx="18" fill="#EAF4FB" />
+            <rect x="566" y="548" width="44" height="66" rx="8" fill="#29ABE2" />
+            <circle cx="588" cy="514" r="36" fill="#DFF4E9" />
+
+            <path d="M548 202h74" stroke="#29ABE2" stroke-width="8" stroke-linecap="round" />
+            <path d="M132 472h140" stroke="#F26522" stroke-width="8" stroke-linecap="round" />
+            <path d="M516 470h112" stroke="#29ABE2" stroke-width="8" stroke-linecap="round" />
+          </svg>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      document.querySelectorAll("[data-toggle-password]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const input = document.getElementById(button.dataset.togglePassword);
+          const isHidden = input.type === "password";
+          input.type = isHidden ? "text" : "password";
+          button.innerHTML = isHidden
+            ? '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 12s3.5-6 8.5-6c2.2 0 4 .8 5.4 1.9m2.6 2.3c1.1 1.4 1.9 3.2 1.9 3.2s-3.5 6-9.5 6c-1.3 0-2.5-.2-3.5-.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M10.2 10.2a2.5 2.5 0 1 0 3.6 3.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="m20 4-16 16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7"/></svg>';
+        });
+      });
+    </script>
+  </body>
+</html>

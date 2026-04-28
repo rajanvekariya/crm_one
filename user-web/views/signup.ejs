@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | CrmOne</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      .signup-simple {
+        min-height: 100vh;
+        background: var(--bg);
+        padding: 40px 20px;
+      }
+
+      .signup-simple__card {
+        width: min(900px, 100%);
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+      }
+
+      .signup-simple__header {
+        margin-bottom: 24px;
+      }
+
+      .signup-simple__title {
+        margin: 0;
+        font-size: 28px;
+        line-height: 1.2;
+        color: var(--text);
+      }
+
+      .signup-simple__subtitle {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .signup-simple__grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .signup-simple__field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .signup-simple__field--full {
+        grid-column: 1 / -1;
+      }
+
+      .signup-simple__actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+
+      .signup-simple__note {
+        margin-top: 18px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .signup-simple__footer {
+        margin-top: 18px;
+        text-align: center;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .signup-simple__footer a {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      @media (max-width: 768px) {
+        .signup-simple__card {
+          padding: 20px;
+        }
+
+        .signup-simple__grid {
+          grid-template-columns: 1fr;
+        }
+
+        .signup-simple__actions {
+          justify-content: stretch;
+        }
+
+        .signup-simple__actions .btn-secondary,
+        .signup-simple__actions .btn-primary {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="signup-simple">
+      <section class="signup-simple__card">
+        <div class="signup-simple__header">
+          <a href="/signup" class="brand" style="margin-bottom: 18px;">
+            <span class="brand__logo">Crm<span class="brand__dot">●</span>One</span>
+            <span class="brand__tag">One Stop Solutions</span>
+          </a>
+          <h1 class="signup-simple__title">Set Up Your CrmOne Account</h1>
+          <p class="signup-simple__subtitle">Add your company details to create your account.</p>
+        </div>
+
+        <% if (fieldErrors.length) { %>
+          <div class="alert-error">
+            <ul style="margin:0; padding-left:18px;">
+              <% fieldErrors.forEach((message) => { %>
+                <li><%= message %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+        <% if (successMessages.length) { %>
+          <div class="alert-success"><%= successMessages[0] %></div>
+        <% } %>
+
+        <% if (errorMessages.length) { %>
+          <div class="alert-error"><%= errorMessages[0] %></div>
+        <% } %>
+
+        <form action="/signup" method="POST">
+          <div class="signup-simple__grid">
+            <div class="signup-simple__field signup-simple__field--full">
+              <label class="field-label" for="company_name">Company Name *</label>
+              <input id="company_name" name="company_name" type="text" class="field-input" value="<%= form.company_name %>" required />
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="email">Email *</label>
+              <input id="email" name="email" type="email" class="field-input" value="<%= form.email %>" required />
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="phone">Phone *</label>
+              <input id="phone" name="phone" type="text" class="field-input" value="<%= form.phone %>" required />
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="country">Country *</label>
+              <select id="country" name="country" class="select" required>
+                <% countries.forEach((country) => { %>
+                  <option value="<%= country %>" <%= form.country === country ? "selected" : "" %>><%= country %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="timezone">Timezone *</label>
+              <select id="timezone" name="timezone" class="select" required>
+                <% timezones.forEach((timezone) => { %>
+                  <option value="<%= timezone %>" <%= form.timezone === timezone ? "selected" : "" %>><%= timezone %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="billing_cycle">Billing Cycle *</label>
+              <select id="billing_cycle" name="billing_cycle" class="select" required>
+                <option value="yearly" <%= form.billing_cycle === "yearly" ? "selected" : "" %>>Yearly</option>
+                <option value="monthly" <%= form.billing_cycle === "monthly" ? "selected" : "" %>>Monthly</option>
+              </select>
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="plan_id">Plan *</label>
+              <select id="plan_id" name="plan_id" class="select" required>
+                <% plans.forEach((plan) => { %>
+                  <option value="<%= plan.id %>" <%= String(form.plan_id) === String(plan.id) ? "selected" : "" %>><%= plan.name %> - <%= plan.max_users %> Users</option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="password">Password *</label>
+              <input id="password" name="password" type="password" class="field-input" required />
+            </div>
+
+            <div class="signup-simple__field">
+              <label class="field-label" for="confirm_password">Confirm Password *</label>
+              <input id="confirm_password" name="confirm_password" type="password" class="field-input" required />
+            </div>
+          </div>
+
+          <p class="signup-simple__note">
+            We'll use your details to set up the account and contact you about activation.
+          </p>
+
+          <div class="signup-simple__actions">
+            <button type="button" onclick="history.back()" class="btn-secondary">Back</button>
+            <button type="submit" class="btn-primary" style="width:auto; min-width: 140px;">Create Account</button>
+          </div>
+        </form>
+
+        <p class="signup-simple__footer">
+          Already have an account? <a href="/login">Log In</a>
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

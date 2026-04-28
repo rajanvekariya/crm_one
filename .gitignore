@@ -1,0 +1,30 @@
+.DS_Store
+
+# Dependencies
+node_modules/
+admin-panel/node_modules/
+user-web/node_modules/
+
+# Environment files
+.env
+.env.*
+!.env.example
+admin-panel/.env
+user-web/.env
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+build/
+.next/
+coverage/
+
+# Local tooling
+.vscode/
+.idea/

@@ -1,0 +1,11 @@
+
+
+ab me chreme me one tab mai admin login kiya sec tab mai user 
+web login kiya so jab mai phir sai admin login vale page mai j
+ake refresh marunga tab muje phir se login page mai pss karega 
+and as same esa user-web mai bhi dashboard show ho raha hoga use re
+fresh karte hi phir se login page show hoga ise fix karna hai. matlab tab login karke tab switch hogi and return usi page
+ pe aavo tab refresh karne per login page pass kar raha hai 
+
+
+Now I logged into Chrome as admin in one tab and logged into user web in the second tab. So when I go to the admin login page again and refresh, it will redirect me to the login page and the same dashboard will be displayed in user web as well. As soon as I refresh it, the login page will be displayed again. I need to fix this. Meaning, after logging in, the tab will switch and I will come back to the same page. On refreshing it, it will redirect me to the login page.
