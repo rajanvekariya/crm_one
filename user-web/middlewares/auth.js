@@ -58,7 +58,7 @@ function ensureActive(req, res, next) {
   }
 
   if (!req.currentUser.is_active) {
-    return res.redirect("/contact");
+    return res.redirect("/activation-pending");
   }
 
   return next();

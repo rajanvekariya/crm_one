@@ -9,6 +9,7 @@ router.post("/signup", authController.signup);
 router.get("/login", authController.showLogin);
 router.post("/login", authController.login);
 router.post("/logout", authController.logout);
-router.get("/contact", authController.showContact);
+router.get("/activation-pending", authController.showContact);
+router.get("/contact", (req, res) => res.redirect("/activation-pending"));
 
 module.exports = router;

@@ -5,207 +5,450 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %> | CrmOne</title>
     <link rel="stylesheet" href="/css/style.css" />
-    <style>
-      .signup-simple {
-        min-height: 100vh;
-        background: var(--bg);
-        padding: 40px 20px;
-      }
-
-      .signup-simple__card {
-        width: min(900px, 100%);
-        margin: 0 auto;
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: var(--shadow);
-        padding: 28px;
-      }
-
-      .signup-simple__header {
-        margin-bottom: 24px;
-      }
-
-      .signup-simple__title {
-        margin: 0;
-        font-size: 28px;
-        line-height: 1.2;
-        color: var(--text);
-      }
-
-      .signup-simple__subtitle {
-        margin: 8px 0 0;
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      .signup-simple__grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-
-      .signup-simple__field {
-        display: grid;
-        gap: 8px;
-      }
-
-      .signup-simple__field--full {
-        grid-column: 1 / -1;
-      }
-
-      .signup-simple__actions {
-        margin-top: 20px;
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-      }
-
-      .signup-simple__note {
-        margin-top: 18px;
-        font-size: 13px;
-        color: var(--muted);
-      }
-
-      .signup-simple__footer {
-        margin-top: 18px;
-        text-align: center;
-        font-size: 14px;
-        color: var(--muted);
-      }
-
-      .signup-simple__footer a {
-        color: var(--primary);
-        font-weight: 600;
-      }
-
-      @media (max-width: 768px) {
-        .signup-simple__card {
-          padding: 20px;
-        }
-
-        .signup-simple__grid {
-          grid-template-columns: 1fr;
-        }
-
-        .signup-simple__actions {
-          justify-content: stretch;
-        }
-
-        .signup-simple__actions .btn-secondary,
-        .signup-simple__actions .btn-primary {
-          width: 100%;
-        }
-      }
-    </style>
   </head>
-  <body>
-    <main class="signup-simple">
-      <section class="signup-simple__card">
-        <div class="signup-simple__header">
-          <a href="/signup" class="brand" style="margin-bottom: 18px;">
-            <span class="brand__logo">Crm<span class="brand__dot">●</span>One</span>
-            <span class="brand__tag">One Stop Solutions</span>
-          </a>
-          <h1 class="signup-simple__title">Set Up Your CrmOne Account</h1>
-          <p class="signup-simple__subtitle">Add your company details to create your account.</p>
-        </div>
+  <body class="page signup-page">
+    <header class="site-header" id="home">
+      <div class="site-header__inner">
+        <a href="/signup" class="brand">
+          <span class="brand__logo">Crm<span class="brand__dot">●</span>One</span>
+          <span class="brand__tag">One Stop Solutions</span>
+        </a>
 
-        <% if (fieldErrors.length) { %>
-          <div class="alert-error">
-            <ul style="margin:0; padding-left:18px;">
-              <% fieldErrors.forEach((message) => { %>
-                <li><%= message %></li>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="#home">Home</a>
+          <a href="#features">Features</a>
+          <a href="#agency">Agency</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#contact">Contact Us</a>
+        </nav>
+
+        <a href="/login" class="site-action">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-7 8a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+          </svg>
+          <span>Log In</span>
+        </a>
+      </div>
+    </header>
+
+    <main>
+      <section class="signup-card" id="pricing">
+        <form action="/signup" method="POST" class="signup-grid" id="signup-form">
+          <div class="signup-form-panel" id="features">
+            <h1 class="signup-title">Set Up Your CrmOne Account</h1>
+            <p class="signup-subtitle">Add Your Company Details Each CrmOne Plan Comes With A</p>
+            <p class="signup-highlight">21 Days Trial 100% Money-Back Guarantee.</p>
+
+            <% if (fieldErrors.length) { %>
+              <div class="alert-error">
+                <ul style="margin: 0; padding-left: 18px;">
+                  <% fieldErrors.forEach((message) => { %>
+                    <li><%= message %></li>
+                  <% }) %>
+                </ul>
+              </div>
+            <% } %>
+
+            <% if (successMessages.length) { %>
+              <div class="alert-success"><%= successMessages[0] %></div>
+            <% } %>
+
+            <% if (errorMessages.length) { %>
+              <div class="alert-error"><%= errorMessages[0] %></div>
+            <% } %>
+
+            <div class="signup-form">
+              <input id="billing-cycle-input" name="billing_cycle" type="hidden" value="<%= form.billing_cycle %>" />
+              <input id="plan-id-input" name="plan_id" type="hidden" value="<%= form.plan_id %>" />
+
+              <div>
+                <label class="field-label" for="company_name">Company Name *</label>
+                <input
+                  id="company_name"
+                  name="company_name"
+                  type="text"
+                  class="field-input"
+                  value="<%= form.company_name %>"
+                  placeholder="Enter your company name"
+                  required
+                />
+              </div>
+
+              <div class="grid-two">
+                <div>
+                  <label class="field-label" for="email">Email *</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    class="field-input"
+                    value="<%= form.email %>"
+                    placeholder="name@company.com"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label class="field-label" for="phone">Phone *</label>
+                  <div class="phone-shell">
+                    <% const selectedCountry = countries.find((country) => country.name === form.country) || countries[0]; %>
+                    <span class="phone-prefix" id="phone-prefix"><%= selectedCountry.dialCode %></span>
+                    <input
+                      id="phone"
+                      name="phone"
+                      type="text"
+                      class="field-input phone-input"
+                      value="<%= form.phone %>"
+                      placeholder="Enter phone number"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-two">
+                <div>
+                  <label class="field-label" for="country">Country *</label>
+                  <div class="select-wrap">
+                    <select id="country" name="country" class="select" required>
+                      <% countries.forEach((country) => { %>
+                        <option
+                          value="<%= country.name %>"
+                          data-code="<%= country.code %>"
+                          data-dial-code="<%= country.dialCode %>"
+                          data-currency-code="<%= country.currencyCode %>"
+                          data-suggested-timezone="<%= country.suggestedTimezone %>"
+                          <%= form.country === country.name ? "selected" : "" %>
+                        >
+                          <%= country.name %> (<%= country.dialCode %>)
+                        </option>
+                      <% }) %>
+                    </select>
+                    <svg class="select-wrap__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="field-label" for="timezone">Timezone *</label>
+                  <div class="select-wrap">
+                    <select id="timezone" name="timezone" class="select" required>
+                      <% timezones.forEach((timezone) => { %>
+                        <option value="<%= timezone %>" <%= form.timezone === timezone ? "selected" : "" %>><%= timezone %></option>
+                      <% }) %>
+                    </select>
+                    <svg class="select-wrap__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid-two">
+                <div>
+                  <label class="field-label" for="password">Password *</label>
+                  <div class="input-shell">
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      class="field-input"
+                      placeholder="Create password"
+                      required
+                    />
+                    <button type="button" class="toggle-btn" data-toggle-password="password" aria-label="Toggle password visibility">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.7" />
+                        <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="field-label" for="confirm_password">Confirm Password *</label>
+                  <div class="input-shell">
+                    <input
+                      id="confirm_password"
+                      name="confirm_password"
+                      type="password"
+                      class="field-input"
+                      placeholder="Re-enter password"
+                      required
+                    />
+                    <button type="button" class="toggle-btn" data-toggle-password="confirm_password" aria-label="Toggle confirm password visibility">
+                      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.7" />
+                        <circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <p class="privacy-text">
+                We&apos;re committed to your privacy. CrmOne uses the information you provide to us to contact you about our relevant content, products, and services. You may unsubscribe from these communications at any time. For more information, check out our Privacy Policy.
+              </p>
+
+            </div>
+          </div>
+
+          <aside class="signup-plan-panel" id="agency">
+            <div class="plan-top-row">
+              <div class="plan-controls-row">
+                <div class="billing-toggle-group" aria-label="Billing cycle">
+                  <button
+                    type="button"
+                    class="billing-toggle <%= form.billing_cycle === 'yearly' ? 'is-active' : '' %>"
+                    data-billing="yearly"
+                  >
+                    Yearly
+                  </button>
+                  <button
+                    type="button"
+                    class="billing-toggle <%= form.billing_cycle === 'monthly' ? 'is-active' : '' %>"
+                    data-billing="monthly"
+                  >
+                    Monthly
+                  </button>
+                </div>
+
+                <label class="country-picker" for="country-pricing">
+                  <svg class="country-picker__globe" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z" stroke="currentColor" stroke-width="1.7" />
+                    <path d="M3.5 9h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                    <path d="M3.5 15h17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                    <path d="M12 3c2.5 2.6 3.9 5.8 3.9 9s-1.4 6.4-3.9 9c-2.5-2.6-3.9-5.8-3.9-9S9.5 5.6 12 3Z" stroke="currentColor" stroke-width="1.7" />
+                  </svg>
+                  <select id="country-pricing" aria-label="Pricing country">
+                    <% countries.forEach((country) => { %>
+                      <option value="<%= country.name %>" <%= form.country === country.name ? "selected" : "" %>><%= country.name %></option>
+                    <% }) %>
+                  </select>
+                  <svg class="country-picker__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </label>
+              </div>
+            </div>
+
+            <div class="plan-list">
+              <% plans.forEach((plan) => { %>
+                <% const isSelected = String(form.plan_id) === String(plan.id); %>
+                <button
+                  type="button"
+                  class="plan-card <%= isSelected ? 'is-selected' : '' %>"
+                  data-plan-card
+                  data-plan-id="<%= plan.id %>"
+                  data-price-yearly="<%= plan.price_yearly %>"
+                  data-price-monthly="<%= plan.price_monthly %>"
+                  aria-pressed="<%= isSelected ? 'true' : 'false' %>"
+                >
+                  <div class="plan-card__left">
+                    <span class="plan-radio <%= isSelected ? '' : 'is-empty' %>"></span>
+                    <div>
+                      <p class="plan-name"><%= plan.name %></p>
+                    </div>
+                  </div>
+
+                  <div class="plan-meta">
+                    <p class="plan-price">
+                      <span data-plan-amount><%= plan.displayPrice.formatted %></span>/<span data-plan-period><%= form.billing_cycle === "monthly" ? "month" : "year" %></span>
+                    </p>
+                    <p class="plan-users"><%= plan.max_users %> Users</p>
+                  </div>
+                </button>
               <% }) %>
-            </ul>
-          </div>
-        <% } %>
-
-        <% if (successMessages.length) { %>
-          <div class="alert-success"><%= successMessages[0] %></div>
-        <% } %>
-
-        <% if (errorMessages.length) { %>
-          <div class="alert-error"><%= errorMessages[0] %></div>
-        <% } %>
-
-        <form action="/signup" method="POST">
-          <div class="signup-simple__grid">
-            <div class="signup-simple__field signup-simple__field--full">
-              <label class="field-label" for="company_name">Company Name *</label>
-              <input id="company_name" name="company_name" type="text" class="field-input" value="<%= form.company_name %>" required />
             </div>
 
-            <div class="signup-simple__field">
-              <label class="field-label" for="email">Email *</label>
-              <input id="email" name="email" type="email" class="field-input" value="<%= form.email %>" required />
+            <div class="plan-note">
+              <p class="plan-note__title">Pricing Note</p>
+              <ul>
+                <li>Plan amounts update with the selected country and billing cycle.</li>
+                <li>Localized prices are estimates. Taxes, GST, or VAT may be added during billing.</li>
+                <li>Need a regional enterprise quote? Contact our team after signup.</li>
+              </ul>
             </div>
+          </aside>
 
-            <div class="signup-simple__field">
-              <label class="field-label" for="phone">Phone *</label>
-              <input id="phone" name="phone" type="text" class="field-input" value="<%= form.phone %>" required />
+          <div class="signup-footer-panel">
+            <div class="action-row">
+              <button type="button" class="btn-secondary" onclick="history.back()">Back</button>
+              <button type="submit" class="btn-dark">Next</button>
             </div>
-
-            <div class="signup-simple__field">
-              <label class="field-label" for="country">Country *</label>
-              <select id="country" name="country" class="select" required>
-                <% countries.forEach((country) => { %>
-                  <option value="<%= country %>" <%= form.country === country ? "selected" : "" %>><%= country %></option>
-                <% }) %>
-              </select>
-            </div>
-
-            <div class="signup-simple__field">
-              <label class="field-label" for="timezone">Timezone *</label>
-              <select id="timezone" name="timezone" class="select" required>
-                <% timezones.forEach((timezone) => { %>
-                  <option value="<%= timezone %>" <%= form.timezone === timezone ? "selected" : "" %>><%= timezone %></option>
-                <% }) %>
-              </select>
-            </div>
-
-            <div class="signup-simple__field">
-              <label class="field-label" for="billing_cycle">Billing Cycle *</label>
-              <select id="billing_cycle" name="billing_cycle" class="select" required>
-                <option value="yearly" <%= form.billing_cycle === "yearly" ? "selected" : "" %>>Yearly</option>
-                <option value="monthly" <%= form.billing_cycle === "monthly" ? "selected" : "" %>>Monthly</option>
-              </select>
-            </div>
-
-            <div class="signup-simple__field">
-              <label class="field-label" for="plan_id">Plan *</label>
-              <select id="plan_id" name="plan_id" class="select" required>
-                <% plans.forEach((plan) => { %>
-                  <option value="<%= plan.id %>" <%= String(form.plan_id) === String(plan.id) ? "selected" : "" %>><%= plan.name %> - <%= plan.max_users %> Users</option>
-                <% }) %>
-              </select>
-            </div>
-
-            <div class="signup-simple__field">
-              <label class="field-label" for="password">Password *</label>
-              <input id="password" name="password" type="password" class="field-input" required />
-            </div>
-
-            <div class="signup-simple__field">
-              <label class="field-label" for="confirm_password">Confirm Password *</label>
-              <input id="confirm_password" name="confirm_password" type="password" class="field-input" required />
-            </div>
-          </div>
-
-          <p class="signup-simple__note">
-            We'll use your details to set up the account and contact you about activation.
-          </p>
-
-          <div class="signup-simple__actions">
-            <button type="button" onclick="history.back()" class="btn-secondary">Back</button>
-            <button type="submit" class="btn-primary" style="width:auto; min-width: 140px;">Create Account</button>
           </div>
         </form>
-
-        <p class="signup-simple__footer">
-          Already have an account? <a href="/login">Log In</a>
-        </p>
       </section>
     </main>
+
+    <footer class="site-footer" id="contact">
+      <div class="site-footer__inner">
+        <div class="site-footer__group">
+          <span>Terms &amp; Conditions</span>
+          <span>Privacy Policy</span>
+          <span>Copyright CrmOne.Com © 2022</span>
+        </div>
+
+        <div class="site-footer__group">
+          <span>+1 7079409099</span>
+          <span>+91 7227045458</span>
+        </div>
+
+        <div class="site-footer__socials">
+          <a href="#" class="site-footer__social" aria-label="Facebook">f</a>
+          <a href="#" class="site-footer__social" aria-label="Instagram">i</a>
+          <a href="#" class="site-footer__social" aria-label="LinkedIn">in</a>
+          <a href="#" class="site-footer__social" aria-label="Twitter">x</a>
+          <a href="#" class="site-footer__social" aria-label="Pinterest">p</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const pricingRates = <%- JSON.stringify(pricingExchangeRates) %>;
+      const countrySelect = document.getElementById("country");
+      const pricingCountrySelect = document.getElementById("country-pricing");
+      const timezoneSelect = document.getElementById("timezone");
+      const phonePrefix = document.getElementById("phone-prefix");
+      const billingCycleInput = document.getElementById("billing-cycle-input");
+      const planIdInput = document.getElementById("plan-id-input");
+      const planCards = [...document.querySelectorAll("[data-plan-card]")];
+      let timezoneWasAutoSuggested = true;
+
+      function getSelectedCountryOption() {
+        return countrySelect.options[countrySelect.selectedIndex];
+      }
+
+      function formatMoney(amount, currencyCode) {
+        try {
+          return new Intl.NumberFormat("en", {
+            style: "currency",
+            currency: currencyCode,
+            maximumFractionDigits: 0,
+          }).format(amount);
+        } catch (error) {
+          return `${currencyCode} ${amount}`;
+        }
+      }
+
+      function syncCountryControls(source) {
+        const nextValue = source.value;
+
+        if (countrySelect.value !== nextValue) {
+          countrySelect.value = nextValue;
+        }
+
+        if (pricingCountrySelect.value !== nextValue) {
+          pricingCountrySelect.value = nextValue;
+        }
+
+        const selectedOption = getSelectedCountryOption();
+        phonePrefix.textContent = selectedOption.dataset.dialCode || "+1";
+
+        const suggestedTimezone = selectedOption.dataset.suggestedTimezone;
+
+        if (
+          suggestedTimezone &&
+          (timezoneWasAutoSuggested || !timezoneSelect.value || timezoneSelect.value === "UTC")
+        ) {
+          timezoneSelect.value = suggestedTimezone;
+        }
+
+        timezoneWasAutoSuggested = timezoneSelect.value === suggestedTimezone;
+      }
+
+      function updatePlanSelection(nextPlanId) {
+        planIdInput.value = String(nextPlanId);
+
+        planCards.forEach((card) => {
+          const isSelected = card.dataset.planId === String(nextPlanId);
+          card.classList.toggle("is-selected", isSelected);
+          card.setAttribute("aria-pressed", isSelected ? "true" : "false");
+          const radio = card.querySelector(".plan-radio");
+
+          if (radio) {
+            radio.classList.toggle("is-empty", !isSelected);
+          }
+        });
+      }
+
+      function updateBillingToggle(nextCycle) {
+        billingCycleInput.value = nextCycle;
+
+        document.querySelectorAll("[data-billing]").forEach((button) => {
+          button.classList.toggle("is-active", button.dataset.billing === nextCycle);
+        });
+      }
+
+      function renderPlanPrices() {
+        const selectedOption = getSelectedCountryOption();
+        const requestedCurrency = selectedOption.dataset.currencyCode || "USD";
+        const currencyCode = pricingRates[requestedCurrency] ? requestedCurrency : "USD";
+        const conversionRate = pricingRates[currencyCode] || pricingRates.USD;
+        const billingCycle = billingCycleInput.value;
+
+        planCards.forEach((card) => {
+          const baseAmount = Number(
+            billingCycle === "monthly" ? card.dataset.priceMonthly : card.dataset.priceYearly
+          );
+          const localizedAmount = Math.max(1, Math.round(baseAmount * conversionRate));
+          const priceNode = card.querySelector("[data-plan-amount]");
+          const periodNode = card.querySelector("[data-plan-period]");
+
+          if (priceNode) {
+            priceNode.textContent = formatMoney(localizedAmount, currencyCode);
+          }
+
+          if (periodNode) {
+            periodNode.textContent = billingCycle === "monthly" ? "month" : "year";
+          }
+        });
+      }
+
+      countrySelect.addEventListener("change", (event) => {
+        syncCountryControls(event.target);
+        renderPlanPrices();
+      });
+
+      pricingCountrySelect.addEventListener("change", (event) => {
+        syncCountryControls(event.target);
+        renderPlanPrices();
+      });
+
+      timezoneSelect.addEventListener("change", () => {
+        const selectedOption = getSelectedCountryOption();
+        timezoneWasAutoSuggested = timezoneSelect.value === selectedOption.dataset.suggestedTimezone;
+      });
+
+      document.querySelectorAll("[data-billing]").forEach((button) => {
+        button.addEventListener("click", () => {
+          updateBillingToggle(button.dataset.billing);
+          renderPlanPrices();
+        });
+      });
+
+      planCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          updatePlanSelection(card.dataset.planId);
+        });
+      });
+
+      document.querySelectorAll("[data-toggle-password]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const input = document.getElementById(button.dataset.togglePassword);
+          const isHidden = input.type === "password";
+          input.type = isHidden ? "text" : "password";
+          button.innerHTML = isHidden
+            ? '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 12s3.5-6 8.5-6c2.2 0 4 .8 5.4 1.9m2.6 2.3c1.1 1.4 1.9 3.2 1.9 3.2s-3.5 6-9.5 6c-1.3 0-2.5-.2-3.5-.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M10.2 10.2a2.5 2.5 0 1 0 3.6 3.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="m20 4-16 16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7"/></svg>';
+        });
+      });
+
+      syncCountryControls(countrySelect);
+      updatePlanSelection(planIdInput.value);
+      updateBillingToggle(billingCycleInput.value);
+      renderPlanPrices();
+    </script>
   </body>
 </html>
