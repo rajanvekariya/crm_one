@@ -20,22 +20,29 @@
     </script>
   </head>
   <body class="min-h-screen bg-slate-100 text-slate-900">
-    <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header class="border-b border-slate-200 bg-white/90 backdrop-blur sticky top-0 z-50">
       <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
         <div class="flex items-center justify-between gap-4">
           <a href="/dashboard" class="text-2xl font-black text-brandBlue">CrmOne</a>
-          <form action="/logout" method="POST" class="lg:hidden">
-            <button class="rounded-full bg-brandBlue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
-              Log Out
+          <div class="flex items-center gap-3 lg:hidden">
+            <form action="/logout" method="POST">
+              <button class="rounded-full bg-brandBlue px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
+                Log Out
+              </button>
+            </form>
+            <button id="dashboard-hamburger" class="flex flex-col justify-between w-6 h-4.5 bg-transparent border-none cursor-pointer p-0" aria-label="Toggle navigation">
+              <span class="w-full h-0.5 bg-slate-900 rounded transition-all duration-300 transform origin-left"></span>
+              <span class="w-full h-0.5 bg-slate-900 rounded transition-all duration-300"></span>
+              <span class="w-full h-0.5 bg-slate-900 rounded transition-all duration-300 transform origin-left"></span>
             </button>
-          </form>
+          </div>
         </div>
-        <nav class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-slate-600 lg:gap-8">
-          <a href="/dashboard" class="transition hover:text-brandBlue">Home</a>
-          <a href="/signup#features" class="transition hover:text-brandBlue">Features</a>
-          <a href="/signup#agency" class="transition hover:text-brandBlue">Agency</a>
-          <a href="/signup#pricing" class="transition hover:text-brandBlue">Pricing</a>
-          <a href="mailto:sales@crmone.com" class="transition hover:text-brandBlue">Contact Us</a>
+        <nav id="dashboard-nav" class="hidden lg:flex flex-col lg:flex-row flex-wrap items-start lg:items-center gap-y-4 gap-x-6 text-sm font-medium text-slate-600 lg:gap-8 bg-white lg:bg-transparent absolute lg:static top-full left-0 right-0 p-4 lg:p-0 shadow-lg lg:shadow-none transition-all">
+          <a href="/dashboard" class="transition hover:text-brandBlue w-full lg:w-auto">Home</a>
+          <a href="/signup#features" class="transition hover:text-brandBlue w-full lg:w-auto">Features</a>
+          <a href="/signup#agency" class="transition hover:text-brandBlue w-full lg:w-auto">Agency</a>
+          <a href="/signup#pricing" class="transition hover:text-brandBlue w-full lg:w-auto">Pricing</a>
+          <a href="mailto:sales@crmone.com" class="transition hover:text-brandBlue w-full lg:w-auto">Contact Us</a>
         </nav>
         <form action="/logout" method="POST" class="hidden lg:block">
           <button class="rounded-full bg-brandBlue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
@@ -44,6 +51,30 @@
         </form>
       </div>
     </header>
+
+    <script>
+      const dashHamburger = document.getElementById('dashboard-hamburger');
+      const dashNav = document.getElementById('dashboard-nav');
+      
+      if (dashHamburger && dashNav) {
+        dashHamburger.addEventListener('click', () => {
+          dashNav.classList.toggle('hidden');
+          dashNav.classList.toggle('flex');
+          
+          // Animate hamburger lines
+          const spans = dashHamburger.querySelectorAll('span');
+          if (dashNav.classList.contains('flex')) {
+            spans[0].style.transform = 'rotate(45deg)';
+            spans[1].style.opacity = '0';
+            spans[2].style.transform = 'rotate(-45deg)';
+          } else {
+            spans[0].style.transform = 'rotate(0)';
+            spans[1].style.opacity = '1';
+            spans[2].style.transform = 'rotate(0)';
+          }
+        });
+      }
+    </script>
 
     <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <section class="rounded-[2rem] bg-brandNavy p-6 text-white shadow-2xl shadow-slate-300/60 sm:p-8">
