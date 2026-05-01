@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 
 const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
+const teamRoutes = require("./routes/team");
 const { attachCurrentUser } = require("./middlewares/auth");
 
 const app = express();
@@ -59,12 +60,21 @@ app.use((req, res, next) => {
 
 app.use(authRoutes);
 app.use(dashboardRoutes);
+app.use(teamRoutes);
+
+const { initDatabase } = require("./db");
 
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send("Something went wrong.");
 });
 
-app.listen(port, () => {
-  console.log(`User web running on http://localhost:${port}`);
-});
+async function startServer() {
+  console.log("Server starting...");
+  await initDatabase();
+  app.listen(port, () => {
+    console.log(`User web running on http://localhost:${port}`);
+  });
+}
+
+startServer();

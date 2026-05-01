@@ -31,6 +31,8 @@
         <nav class="mt-10 space-y-2">
           <a href="/api/dashboard" class="block rounded-2xl px-4 py-3 font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white">Dashboard</a>
           <a href="/api/users" class="block rounded-2xl bg-brandBlue px-4 py-3 font-medium text-white">Users</a>
+          <a href="/api/companies" class="block rounded-2xl px-4 py-3 font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white">Companies</a>
+          <a href="/api/plans" class="block rounded-2xl px-4 py-3 font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white">Plans</a>
         </nav>
 
         <form action="/api/logout" method="POST" class="mt-auto">
@@ -73,8 +75,11 @@
                   <th class="pb-3 pr-6 font-medium">Phone</th>
                   <th class="pb-3 pr-6 font-medium">Country</th>
                   <th class="pb-3 pr-6 font-medium">Plan</th>
-                  <th class="pb-3 pr-6 font-medium">Billing Cycle</th>
+                  <th class="pb-3 pr-6 font-medium">Billing</th>
+                  <th class="pb-3 pr-6 font-medium">Plan Start</th>
+                  <th class="pb-3 pr-6 font-medium">Plan End</th>
                   <th class="pb-3 pr-6 font-medium">Status</th>
+                   <th class="pb-3 pr-6 font-medium">Role</th>
                   <th class="pb-3 pr-6 font-medium">Registered At</th>
                   <th class="pb-3 font-medium">Actions</th>
                 </tr>
@@ -88,9 +93,16 @@
                     <td class="py-4 pr-6 text-slate-600"><%= user.country %></td>
                     <td class="py-4 pr-6 text-slate-600"><%= user.plan_name || "N/A" %></td>
                     <td class="py-4 pr-6 capitalize text-slate-600"><%= user.billing_cycle %></td>
+                    <td class="py-4 pr-6 text-slate-600"><%= user.plan_start_date ? new Date(user.plan_start_date).toLocaleDateString() : "N/A" %></td>
+                    <td class="py-4 pr-6 text-slate-600"><%= user.plan_end_date ? new Date(user.plan_end_date).toLocaleDateString() : "N/A" %></td>
                     <td class="py-4 pr-6">
                       <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold <%= user.is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700' %>">
                         <%= user.is_active ? "Active" : "Inactive" %>
+                      </span>
+                    </td>
+                    <td class="py-4 pr-6">
+                      <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold <%= user.role === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-700' %>">
+                        <%= user.role === 'admin' ? "Admin" : "User" %>
                       </span>
                     </td>
                     <td class="py-4 pr-6 text-slate-600"><%= new Date(user.created_at).toLocaleDateString() %></td>

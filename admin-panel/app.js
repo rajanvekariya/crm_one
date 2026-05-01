@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
+const adminModules = require("./routes/adminModules");
 
 const app = express();
 const port = Number(process.env.PORT) || 3001;
@@ -30,6 +31,7 @@ app.use(
   })
 );
 app.use((req, res, next) => {
+  if (!req.session) return next();
   const flashStore = req.session.flash || { success: [], error: [] };
 
   req.flash = (type, message) => {
@@ -50,20 +52,29 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  res.locals.currentAdmin = req.session.admin || null;
-  res.locals.successMessages = req.flash("success");
-  res.locals.errorMessages = req.flash("error");
+  res.locals.currentAdmin = (req.session && req.session.admin) || null;
+  res.locals.successMessages = req.flash ? req.flash("success") : [];
+  res.locals.errorMessages = req.flash ? req.flash("error") : [];
   next();
 });
 
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
+app.use("/api", adminModules);
+
+const { initDatabase } = require("./db");
 
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send("Something went wrong.");
 });
 
-app.listen(port, () => {
-  console.log(`Admin panel running on http://localhost:${port}`);
-});
+async function startServer() {
+  console.log("Admin Panel Server starting...");
+  await initDatabase();
+  app.listen(port, () => {
+    console.log(`Admin panel running on http://localhost:${port}`);
+  });
+}
+
+startServer();

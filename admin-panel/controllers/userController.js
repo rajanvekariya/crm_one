@@ -12,13 +12,14 @@ async function showDashboard(req, res, next) {
 
     const recentUsersQuery = `
       SELECT
-        users.company_name,
+        companies.name AS company_name,
         users.email,
         users.created_at,
         users.is_active,
         plans.name AS plan_name
       FROM users
-      LEFT JOIN plans ON plans.id = users.plan_id
+      LEFT JOIN companies ON companies.id = users.company_id
+      LEFT JOIN plans ON plans.id = companies.plan_id
       ORDER BY users.created_at DESC
       LIMIT 5
     `;
@@ -43,16 +44,20 @@ async function showUsers(req, res, next) {
     const query = `
       SELECT
         users.id,
-        users.company_name,
+        companies.name AS company_name,
         users.email,
         users.phone,
         users.country,
-        users.billing_cycle,
+        companies.billing_cycle,
+        companies.plan_start_date,
+        companies.plan_end_date,
         users.is_active,
+        users.role,
         users.created_at,
         plans.name AS plan_name
       FROM users
-      LEFT JOIN plans ON plans.id = users.plan_id
+      LEFT JOIN companies ON companies.id = users.company_id
+      LEFT JOIN plans ON plans.id = companies.plan_id
       ORDER BY users.created_at DESC
     `;
 
@@ -71,7 +76,7 @@ async function setUserStatus(req, res, next, status) {
   const { id } = req.params;
   try {
     const result = await db.query(
-      "UPDATE users SET is_active = $1 WHERE id = $2 RETURNING company_name",
+      "UPDATE users SET is_active = $1 WHERE id = $2 RETURNING email",
       [status, id]
     );
 
@@ -82,7 +87,7 @@ async function setUserStatus(req, res, next, status) {
 
     req.flash(
       "success",
-      `${result.rows[0].company_name} has been ${
+      `User ${result.rows[0].email} has been ${
         status ? "activated" : "deactivated"
       }.`
     );
@@ -105,7 +110,7 @@ async function deleteUser(req, res, next) {
 
   try {
     const result = await db.query(
-      "DELETE FROM users WHERE id = $1 RETURNING company_name",
+      "DELETE FROM users WHERE id = $1 RETURNING email",
       [id]
     );
 
@@ -114,7 +119,7 @@ async function deleteUser(req, res, next) {
       return res.redirect("/api/users");
     }
 
-    req.flash("success", `${result.rows[0].company_name} has been deleted.`);
+    req.flash("success", `User ${result.rows[0].email} has been deleted.`);
     return res.redirect("/api/users");
   } catch (error) {
     return next(error);

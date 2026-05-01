@@ -38,12 +38,14 @@
     </header>
 
     <main>
-      <section class="signup-card" id="pricing">
+      <section class="signup-card <%= (locals.query && locals.query.invite === 'true') ? 'is-invite-mode' : '' %>" id="pricing">
         <form action="/signup" method="POST" class="signup-grid" id="signup-form">
           <div class="signup-form-panel" id="features">
-            <h1 class="signup-title">Set Up Your CrmOne Account</h1>
-            <p class="signup-subtitle">Add Your Company Details Each CrmOne Plan Comes With A</p>
+            <h1 class="signup-title"><%= (locals.query && locals.query.invite === 'true') ? 'Join Your Team on CrmOne' : 'Set Up Your CrmOne Account' %></h1>
+            <p class="signup-subtitle"><%= (locals.query && locals.query.invite === 'true') ? 'Complete your profile to accept the invitation.' : 'Add Your Company Details Each CrmOne Plan Comes With A' %></p>
+            <% if (!locals.query || locals.query.invite !== 'true') { %>
             <p class="signup-highlight">21 Days Trial 100% Money-Back Guarantee.</p>
+            <% } %>
 
             <% if (fieldErrors.length) { %>
               <div class="alert-error">
@@ -67,6 +69,11 @@
               <input id="billing-cycle-input" name="billing_cycle" type="hidden" value="<%= form.billing_cycle %>" />
               <input id="plan-id-input" name="plan_id" type="hidden" value="<%= form.plan_id %>" />
 
+              <% if (locals.query && locals.query.invite === 'true') { %>
+                <input type="hidden" name="invite" value="true" />
+                <input type="hidden" name="invitationId" value="<%= locals.query.invitationId %>" />
+                <input type="hidden" name="companyId" value="<%= locals.query.companyId %>" />
+              <% } else { %>
               <div>
                 <label class="field-label" for="company_name">Company Name *</label>
                 <input
@@ -79,6 +86,7 @@
                   required
                 />
               </div>
+              <% } %>
 
               <div class="grid-two">
                 <div>
@@ -91,21 +99,30 @@
                     value="<%= form.email %>"
                     placeholder="name@company.com"
                     required
+                    <%= (locals.query && locals.query.invite === 'true') ? 'readonly style="background-color: #f3f4f6; cursor: not-allowed; color: #6b7280;"' : '' %>
                   />
                 </div>
 
                 <div>
                   <label class="field-label" for="phone">Phone *</label>
                   <div class="phone-shell">
-                    <% const selectedCountry = countries.find((country) => country.name === form.country) || countries[0]; %>
-                    <span class="phone-prefix" id="phone-prefix"><%= selectedCountry.dialCode %></span>
+                    <select id="phone_country" name="phone_country" class="phone-country-select">
+                      <% countries.forEach((country) => { %>
+                        <option
+                          value="<%= country.dialCode %>"
+                          <%= (form.phone_country === country.dialCode || (!form.phone_country && form.country === country.name)) ? "selected" : "" %>
+                        >
+                          <%= country.code %> <%= country.dialCode %>
+                        </option>
+                      <% }) %>
+                    </select>
                     <input
                       id="phone"
                       name="phone"
-                      type="text"
+                      type="number"
                       class="field-input phone-input"
                       value="<%= form.phone %>"
-                      placeholder="Enter phone number"
+                      placeholder="Number"
                       required
                     />
                   </div>
@@ -200,6 +217,7 @@
             </div>
           </div>
 
+          <% if (!locals.query || locals.query.invite !== 'true') { %>
           <aside class="signup-plan-panel" id="agency">
             <div class="plan-top-row">
               <div class="plan-controls-row">
@@ -229,7 +247,7 @@
                   </svg>
                   <select id="country-pricing" aria-label="Pricing country">
                     <% countries.forEach((country) => { %>
-                      <option value="<%= country.name %>" <%= form.country === country.name ? "selected" : "" %>><%= country.name %></option>
+                      <option value="<%= country.name %>" data-currency-code="<%= country.currencyCode %>" <%= form.country === country.name ? "selected" : "" %>><%= country.name %></option>
                     <% }) %>
                   </select>
                   <svg class="country-picker__arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -277,6 +295,7 @@
               </ul>
             </div>
           </aside>
+          <% } %>
 
           <div class="signup-footer-panel">
             <div class="action-row">
@@ -316,7 +335,7 @@
       const countrySelect = document.getElementById("country");
       const pricingCountrySelect = document.getElementById("country-pricing");
       const timezoneSelect = document.getElementById("timezone");
-      const phonePrefix = document.getElementById("phone-prefix");
+      const phoneCountrySelect = document.getElementById("phone_country");
       const billingCycleInput = document.getElementById("billing-cycle-input");
       const planIdInput = document.getElementById("plan-id-input");
       const planCards = [...document.querySelectorAll("[data-plan-card]")];
@@ -350,7 +369,10 @@
         }
 
         const selectedOption = getSelectedCountryOption();
-        phonePrefix.textContent = selectedOption.dataset.dialCode || "+1";
+        
+        if (phoneCountrySelect) {
+          phoneCountrySelect.value = selectedOption.dataset.dialCode || "+1";
+        }
 
         const suggestedTimezone = selectedOption.dataset.suggestedTimezone;
 
@@ -388,8 +410,8 @@
       }
 
       function renderPlanPrices() {
-        const selectedOption = getSelectedCountryOption();
-        const requestedCurrency = selectedOption.dataset.currencyCode || "USD";
+        const selectedPricingOption = pricingCountrySelect.options[pricingCountrySelect.selectedIndex];
+        const requestedCurrency = selectedPricingOption.dataset.currencyCode || "USD";
         const currencyCode = pricingRates[requestedCurrency] ? requestedCurrency : "USD";
         const conversionRate = pricingRates[currencyCode] || pricingRates.USD;
         const billingCycle = billingCycleInput.value;

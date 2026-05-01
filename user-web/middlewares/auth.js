@@ -11,15 +11,19 @@ async function attachCurrentUser(req, res, next) {
       `
         SELECT
           users.id,
-          users.company_name,
+          users.company_id,
+          users.role,
+          companies.name AS company_name,
+          companies.plan_end_date,
           users.email,
           users.is_active,
-          users.billing_cycle,
+          companies.billing_cycle,
           users.created_at,
           plans.name AS plan_name,
           plans.max_users
         FROM users
-        LEFT JOIN plans ON plans.id = users.plan_id
+        LEFT JOIN companies ON companies.id = users.company_id
+        LEFT JOIN plans ON plans.id = companies.plan_id
         WHERE users.id = $1
       `,
       [req.session.userId]
@@ -29,9 +33,14 @@ async function attachCurrentUser(req, res, next) {
 
     if (!user) {
       req.session.userId = null;
-      req.session.destroy(() => {});
+      req.session.destroy(() => { });
       res.locals.currentUser = null;
       return next();
+    }
+
+    // Check for plan expiration
+    if (user.plan_end_date && new Date(user.plan_end_date) < new Date()) {
+      user.is_active = false; // Effectively deactivates the user session-wise
     }
 
     req.currentUser = user;

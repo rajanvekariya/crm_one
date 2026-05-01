@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | CrmOne</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brandBlue: "#1a73e8",
+              brandOrange: "#f97316",
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900">
+    <div class="flex min-h-screen">
+      <aside class="hidden w-72 flex-col bg-slate-950 px-6 py-8 text-white lg:flex">
+        <div>
+          <div class="inline-flex rounded-full bg-brandBlue/20 px-4 py-1 text-sm font-semibold text-blue-200">
+            CrmOne
+          </div>
+          <h2 class="mt-4 text-2xl font-bold">Admin Panel</h2>
+        </div>
+
+        <nav class="mt-10 space-y-2">
+          <a href="/api/dashboard" class="block rounded-2xl px-4 py-3 font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white">Dashboard</a>
+          <a href="/api/users" class="block rounded-2xl px-4 py-3 font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white">Users</a>
+          <a href="/api/companies" class="block rounded-2xl bg-brandBlue px-4 py-3 font-medium text-white">Companies</a>
+          <a href="/api/plans" class="block rounded-2xl px-4 py-3 font-medium text-slate-300 transition hover:bg-slate-900 hover:text-white">Plans</a>
+        </nav>
+
+        <form action="/api/logout" method="POST" class="mt-auto">
+          <button class="w-full rounded-2xl border border-slate-700 px-4 py-3 text-left font-medium text-slate-300 transition hover:border-slate-500 hover:text-white">
+            Logout
+          </button>
+        </form>
+      </aside>
+
+      <main class="flex-1 p-4 sm:p-8">
+        <div class="mb-8 flex flex-col gap-4 rounded-3xl bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm font-medium uppercase tracking-[0.2em] text-brandOrange">Tenants</p>
+            <h1 class="mt-2 text-3xl font-bold">Registered Companies</h1>
+          </div>
+          <div class="rounded-2xl bg-slate-100 px-5 py-3 text-sm text-slate-600">
+            Total Companies: <span class="font-bold text-slate-900"><%= companies.length %></span>
+          </div>
+        </div>
+
+        <section class="rounded-3xl bg-white p-6 shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-left text-sm">
+              <thead class="border-b border-slate-200 text-slate-500">
+                <tr>
+                  <th class="pb-3 pr-6 font-medium">Company Name</th>
+                  <th class="pb-3 pr-6 font-medium">Current Plan</th>
+                  <th class="pb-3 pr-6 font-medium">Active Users</th>
+                  <th class="pb-3 pr-6 font-medium">Billing</th>
+                  <th class="pb-3 pr-6 font-medium">Plan Start</th>
+                  <th class="pb-3 pr-6 font-medium">Plan End</th>
+                  <th class="pb-3 font-medium">Registered At</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <% companies.forEach((company) => { %>
+                  <tr>
+                    <td class="py-4 pr-6 font-semibold text-slate-900"><%= company.name %></td>
+                    <td class="py-4 pr-6">
+                      <span class="inline-flex rounded-lg bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                        <%= company.plan_name || "Free/None" %>
+                      </span>
+                    </td>
+                    <td class="py-4 pr-6 text-slate-600">
+                      <div class="flex items-center gap-2">
+                        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                        <%= company.user_count %> Users
+                      </div>
+                    </td>
+                    <td class="py-4 pr-6 capitalize text-slate-600"><%= company.billing_cycle || "N/A" %></td>
+                    <td class="py-4 pr-6 text-slate-600"><%= company.plan_start_date ? new Date(company.plan_start_date).toLocaleDateString() : "N/A" %></td>
+                    <td class="py-4 pr-6 text-slate-600">
+                      <% if (company.plan_end_date && new Date(company.plan_end_date) < new Date()) { %>
+                        <span class="text-red-600 font-medium">Expired</span>
+                      <% } else { %>
+                        <%= company.plan_end_date ? new Date(company.plan_end_date).toLocaleDateString() : "N/A" %>
+                      <% } %>
+                    </td>
+                    <td class="py-4 text-slate-500"><%= new Date(company.created_at).toLocaleDateString() %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

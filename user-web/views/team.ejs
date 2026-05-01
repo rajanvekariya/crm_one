@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | CrmOne</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brandBlue: "#1a73e8",
+              brandOrange: "#f97316",
+              brandNavy: "#0f172a",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .modal-backdrop { background-color: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900">
+    <header class="border-b border-slate-200 bg-white/90 backdrop-blur sticky top-0 z-50">
+      <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
+        <div class="flex items-center justify-between gap-4">
+          <a href="/dashboard" class="text-2xl font-black text-brandBlue">CrmOne</a>
+        </div>
+        <nav id="dashboard-nav" class="hidden lg:flex flex-col lg:flex-row flex-wrap items-start lg:items-center gap-y-4 gap-x-6 text-sm font-medium text-slate-600 lg:gap-8 bg-white lg:bg-transparent absolute lg:static top-full left-0 right-0 p-4 lg:p-0 shadow-lg lg:shadow-none transition-all">
+          <a href="/dashboard" class="transition hover:text-brandBlue w-full lg:w-auto">Home</a>
+          <% if (currentUser && currentUser.role === 'admin') { %>
+            <a href="/team" class="transition hover:text-brandBlue w-full lg:w-auto <%= title === 'Team Management' ? 'text-brandBlue font-bold' : '' %>">Team Management</a>
+          <% } %>
+          <a href="/signup#features" class="transition hover:text-brandBlue w-full lg:w-auto">Features</a>
+        </nav>
+        <form action="/logout" method="POST" class="hidden lg:block">
+          <button class="rounded-full bg-brandBlue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
+            Log Out
+          </button>
+        </form>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <% if (successMessages && successMessages.length) { %>
+        <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <%= successMessages[0] %>
+        </div>
+      <% } %>
+      <% if (errorMessages && errorMessages.length) { %>
+        <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <%= errorMessages[0] %>
+        </div>
+      <% } %>
+
+      <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-bold">Team Management</h1>
+          <p class="mt-1 text-sm text-slate-500">
+            Manage your team members and invitations.
+            <span class="ml-2 inline-flex items-center rounded-md bg-brandBlue/10 px-2 py-1 text-xs font-medium text-brandBlue ring-1 ring-inset ring-brandBlue/20">
+              <%= totalUsedSlots %> of <%= maxUsers %> slots used (Admin excluded)
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <% if (currentUser && currentUser.role === 'admin') { %>
+      <section class="mb-10 rounded-3xl bg-white p-6 shadow-sm">
+        <h2 class="text-xl font-bold">Invite a New Member</h2>
+        <form action="/team/invite" method="POST" class="mt-4 flex max-w-md flex-col gap-4 sm:flex-row sm:items-end">
+          <div class="flex-1">
+            <label for="invite-email" class="mb-1 block text-sm font-medium text-slate-700">Email Address</label>
+            <input type="email" id="invite-email" name="email" required placeholder="name@company.com" class="block w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:border-brandBlue focus:outline-none focus:ring-1 focus:ring-brandBlue">
+          </div>
+          <button type="submit" class="rounded-xl bg-brandBlue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
+            Send Invite
+          </button>
+        </form>
+      </section>
+      <% } %>
+
+      <section class="mb-10 rounded-3xl bg-white p-6 shadow-sm overflow-x-auto">
+        <h2 class="mb-4 text-xl font-bold">Current Team Members</h2>
+        <table class="min-w-full text-left text-sm">
+          <thead class="border-b border-slate-200 text-slate-500">
+            <tr>
+              <th class="pb-3 pr-6 font-medium">Email</th>
+              <th class="pb-3 pr-6 font-medium">Phone</th>
+              <th class="pb-3 pr-6 font-medium">Role</th>
+              <th class="pb-3 pr-6 font-medium">Member Since</th>
+              <th class="pb-3 pr-6 font-medium">Status</th>
+              <th class="pb-3 font-medium text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <% members.forEach(member => { %>
+            <tr>
+              <td class="py-4 pr-6 text-slate-900 font-medium"><%= member.email %></td>
+              <td class="py-4 pr-6 text-slate-600"><%= member.phone || "—" %></td>
+              <td class="py-4 pr-6">
+                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold <%= member.role === 'admin' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-800' %>">
+                  <%= member.role === 'admin' ? 'Admin' : 'User' %>
+                </span>
+              </td>
+              <td class="py-4 pr-6 text-slate-600"><%= new Date(member.created_at).toLocaleDateString() %></td>
+              <td class="py-4 pr-6">
+                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold <%= member.is_active ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800' %>">
+                  <%= member.is_active ? 'Active' : 'Inactive' %>
+                </span>
+              </td>
+              <td class="py-4 text-right">
+                <% if (currentUser && currentUser.role === 'admin') { %>
+                <div class="flex items-center justify-end gap-3">
+                  <button 
+                    onclick='openEditModal(<%- JSON.stringify(member) %>)'
+                    class="text-brandBlue hover:text-blue-700 font-medium text-xs transition"
+                  >
+                    Edit
+                  </button>
+                  <% if (member.id !== currentUser.id) { %>
+                  <form action="/team/member/remove" method="POST" onsubmit="return confirm('Remove this member?');" class="inline">
+                    <input type="hidden" name="id" value="<%= member.id %>">
+                    <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-xs transition">Remove</button>
+                  </form>
+                  <% } %>
+                </div>
+                <% } else { %>
+                <span class="text-slate-400 text-xs italic">Read-only</span>
+                <% } %>
+              </td>
+            </tr>
+            <% }); %>
+            <% if (members.length === 0) { %>
+            <tr>
+              <td colspan="6" class="py-8 text-center text-slate-500">No members found.</td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </section>
+
+      <% if (pendingInvites && pendingInvites.length > 0) { %>
+      <section class="rounded-3xl bg-white p-6 shadow-sm overflow-x-auto">
+        <h2 class="mb-4 text-xl font-bold">Pending Invitations</h2>
+        <table class="min-w-full text-left text-sm">
+          <thead class="border-b border-slate-200 text-slate-500">
+            <tr>
+              <th class="pb-3 pr-6 font-medium">Email</th>
+              <th class="pb-3 pr-6 font-medium">Invited On</th>
+              <th class="pb-3 font-medium text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <% pendingInvites.forEach(invite => { %>
+            <tr>
+              <td class="py-4 pr-6 text-slate-900 font-medium"><%= invite.email_id %></td>
+              <td class="py-4 pr-6 text-slate-600"><%= new Date(invite.created_at).toLocaleDateString() %></td>
+              <td class="py-4 text-right">
+                <% if (currentUser && currentUser.role === 'admin') { %>
+                <form action="/team/invite/revoke" method="POST" onsubmit="return confirm('Revoke this invitation?');">
+                  <input type="hidden" name="id" value="<%= invite.id %>">
+                  <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-xs transition">Revoke</button>
+                </form>
+                <% } %>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </section>
+      <% } %>
+
+    </main>
+
+    <!-- Edit Member Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 z-[60] items-center justify-center p-4 modal-backdrop">
+      <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+          <h3 class="text-xl font-bold text-slate-900">Edit Team Member</h3>
+          <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 transition">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l18 18"></path></svg>
+          </button>
+        </div>
+        <form action="/team/member/update" method="POST" class="p-6">
+          <input type="hidden" id="edit-id" name="id">
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
+              <div id="edit-email-display" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 text-sm"></div>
+            </div>
+
+            <div>
+              <label for="edit-phone" class="block text-sm font-semibold text-slate-700 mb-1">Phone Number</label>
+              <input type="text" id="edit-phone" name="phone" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-1 focus:ring-brandBlue focus:border-brandBlue outline-none transition">
+            </div>
+
+            <div>
+              <label for="edit-timezone" class="block text-sm font-semibold text-slate-700 mb-1">Timezone</label>
+              <select id="edit-timezone" name="timezone" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-1 focus:ring-brandBlue focus:border-brandBlue outline-none transition">
+                <% timezones.forEach(tz => { %>
+                  <option value="<%= tz %>"><%= tz %></option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div>
+              <label for="edit-role" class="block text-sm font-semibold text-slate-700 mb-1">Role</label>
+              <select id="edit-role" name="role" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-1 focus:ring-brandBlue focus:border-brandBlue outline-none transition disabled:bg-slate-50 disabled:text-slate-500">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mt-8 flex items-center justify-end gap-3">
+            <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-800 transition">Cancel</button>
+            <button type="submit" class="px-6 py-2.5 bg-brandBlue text-white text-sm font-semibold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-brandBlue/20">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      const editModal = document.getElementById('edit-modal');
+      const editId = document.getElementById('edit-id');
+      const editEmailDisplay = document.getElementById('edit-email-display');
+      const editPhone = document.getElementById('edit-phone');
+      const editTimezone = document.getElementById('edit-timezone');
+      const editRole = document.getElementById('edit-role');
+
+      function openEditModal(member) {
+        editId.value = member.id;
+        editEmailDisplay.textContent = member.email;
+        editPhone.value = member.phone || '';
+        editTimezone.value = member.timezone || 'UTC';
+        editRole.value = member.role;
+        
+        // Don't let admin demote themselves
+        const isSelf = member.id === '<%= currentUser.id %>';
+        editRole.disabled = isSelf;
+
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeEditModal() {
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+      }
+
+      // Close modal on backdrop click
+      editModal.addEventListener('click', (e) => {
+        if (e.target === editModal) closeEditModal();
+      });
+    </script>
+  </body>
+</html>

@@ -82,10 +82,31 @@ const PRICING_EXCHANGE_RATES = {
   ZAR: 0.22,
 };
 
-const TIMEZONES =
-  typeof Intl.supportedValuesOf === "function"
-    ? Intl.supportedValuesOf("timeZone").sort((left, right) => left.localeCompare(right))
-    : FALLBACK_TIMEZONES;
+const TIMEZONES = [
+  "Pacific/Honolulu",
+  "America/Anchorage",
+  "America/Los_Angeles",
+  "America/Denver",
+  "America/Chicago",
+  "America/New_York",
+  "America/Sao_Paulo",
+  "UTC",
+  "Europe/London",
+  "Europe/Paris",
+  "Europe/Berlin",
+  "Europe/Moscow",
+  "Africa/Lagos",
+  "Africa/Johannesburg",
+  "Asia/Dubai",
+  "Asia/Karachi",
+  "Asia/Kolkata",
+  "Asia/Bangkok",
+  "Asia/Singapore",
+  "Asia/Hong_Kong",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+  "Pacific/Auckland"
+];
 
 function sanitizeDialCode(dialCode) {
   return (dialCode || "").replace(/\s+/g, " ").trim();
@@ -229,7 +250,7 @@ function getPlanDisplayPrice(plan, countryName, billingCycle) {
 
 async function fetchPlans() {
   const result = await db.query(
-    "SELECT id, name, price_yearly, price_monthly, max_users FROM plans ORDER BY id ASC"
+    "SELECT id, name, price_yearly, price_monthly, max_users FROM plans ORDER BY max_users ASC"
   );
   return result.rows;
 }
@@ -292,6 +313,12 @@ async function showSignup(req, res, next) {
     viewModel.form.plan_id = plans[0] ? String(plans[0].id) : "";
     viewModel.plans = enrichPlansForView(plans, viewModel.form.country, viewModel.form.billing_cycle);
 
+    viewModel.query = req.query;
+    if (req.query.invite === "true") {
+      viewModel.title = "Join Your Team on CrmOne";
+      viewModel.form.email = req.query.email || "";
+    }
+
     return res.render("signup", viewModel);
   } catch (error) {
     return next(error);
@@ -299,6 +326,8 @@ async function showSignup(req, res, next) {
 }
 
 async function signup(req, res, next) {
+  const isInvite = req.body.invite === 'true';
+
   const {
     company_name = "",
     email = "",
@@ -309,20 +338,27 @@ async function signup(req, res, next) {
     confirm_password = "",
     billing_cycle = "yearly",
     plan_id = "",
+    invitationId = "",
+    companyId = "",
   } = req.body;
 
   const form = {
-    company_name: company_name.trim(),
-    email: email.trim().toLowerCase(),
-    phone: phone.trim(),
-    country: normalizeCountryValue(country),
-    timezone: normalizeTimezoneValue(timezone, DEFAULT_TIMEZONE),
-    billing_cycle,
-    plan_id: String(plan_id),
+    company_name: String(company_name || "").trim(),
+    email: String(email || "").trim().toLowerCase(),
+    phone: String(phone || "").trim(),
+    country: normalizeCountryValue(String(country || "")),
+    timezone: normalizeTimezoneValue(String(timezone || ""), DEFAULT_TIMEZONE),
+    billing_cycle: String(billing_cycle || "yearly"),
+    plan_id: String(plan_id || ""),
   };
 
   try {
     const viewModel = buildSignupModel(form);
+    viewModel.query = req.body;
+    if (isInvite) {
+      viewModel.title = "Join Your Team on CrmOne";
+    }
+
     const rawPlans = await fetchPlans();
     viewModel.plans = enrichPlansForView(rawPlans, viewModel.form.country, viewModel.form.billing_cycle);
 
@@ -330,17 +366,17 @@ async function signup(req, res, next) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const selectedPlan = rawPlans.find((plan) => String(plan.id) === String(plan_id));
 
-    if (!form.company_name) fieldErrors.push("Company name is required.");
+    if (!isInvite && !form.company_name) fieldErrors.push("Company name is required.");
     if (!form.email || !emailPattern.test(form.email)) fieldErrors.push("A valid email is required.");
     if (!form.phone) fieldErrors.push("Phone number is required.");
     if (!VALID_COUNTRY_NAMES.has(form.country)) fieldErrors.push("Please select a valid country.");
     if (!TIMEZONES.includes(form.timezone)) fieldErrors.push("Please select a valid timezone.");
     if (password.length < 8) fieldErrors.push("Password must be at least 8 characters long.");
     if (password !== confirm_password) fieldErrors.push("Passwords do not match.");
-    if (!["yearly", "monthly"].includes(form.billing_cycle)) {
+    if (!isInvite && !["yearly", "monthly"].includes(form.billing_cycle)) {
       fieldErrors.push("Please select a valid billing cycle.");
     }
-    if (!selectedPlan) fieldErrors.push("Please choose a plan.");
+    if (!isInvite && !selectedPlan) fieldErrors.push("Please choose a plan.");
 
     if (fieldErrors.length) {
       viewModel.fieldErrors = fieldErrors;
@@ -354,26 +390,81 @@ async function signup(req, res, next) {
       return res.status(409).render("signup", viewModel);
     }
 
+    if (isInvite) {
+      const inviteCheck = await db.query("SELECT * FROM invites WHERE id = $1 AND company_id = $2 AND email_id = $3", [invitationId, companyId, form.email]);
+      if (!inviteCheck.rows[0]) {
+        req.flash("error", "Invalid or expired invitation");
+        return res.redirect("/signup");
+      }
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query(
-      `
-        INSERT INTO users
-          (company_name, email, phone, country, timezone, password, plan_id, billing_cycle, is_active)
-        VALUES
-          ($1, $2, $3, $4, $5, $6, $7, $8, false)
-      `,
-      [
-        form.company_name,
-        form.email,
-        form.phone,
-        form.country,
-        form.timezone,
-        hashedPassword,
-        selectedPlan.id,
-        form.billing_cycle,
-      ]
-    );
+    let finalCompanyId = companyId;
+
+    if (!isInvite) {
+      const startDate = new Date();
+      const endDate = new Date();
+      if (form.billing_cycle === "monthly") {
+        endDate.setMonth(startDate.getMonth() + 1);
+      } else {
+        endDate.setFullYear(startDate.getFullYear() + 1);
+      }
+
+      const companyRes = await db.query(
+        "INSERT INTO companies (name, plan_id, billing_cycle, plan_start_date, plan_end_date) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+        [form.company_name, selectedPlan.id, form.billing_cycle, startDate, endDate]
+      );
+      finalCompanyId = companyRes.rows[0].id;
+
+      const userRes = await db.query(
+        `
+          INSERT INTO users
+            (company_id, email, phone, country, timezone, password, is_active, role)
+          VALUES
+            ($1, $2, $3, $4, $5, $6, false, 'admin')
+          RETURNING id
+        `,
+        [
+          finalCompanyId,
+          form.email,
+          form.phone,
+          form.country,
+          form.timezone,
+          hashedPassword,
+        ]
+      );
+
+      await db.query(
+        "INSERT INTO roles (company_id, user_id, role) VALUES ($1, $2, 'admin')",
+        [finalCompanyId, userRes.rows[0].id]
+      );
+    } else {
+      const userRes = await db.query(
+        `
+          INSERT INTO users
+            (company_id, email, phone, country, timezone, password, is_active, role)
+          VALUES
+            ($1, $2, $3, $4, $5, $6, false, 'user')
+          RETURNING id
+        `,
+        [
+          finalCompanyId,
+          form.email,
+          form.phone,
+          form.country,
+          form.timezone,
+          hashedPassword,
+        ]
+      );
+
+      await db.query(
+        "INSERT INTO roles (company_id, user_id, role) VALUES ($1, $2, 'user')",
+        [finalCompanyId, userRes.rows[0].id]
+      );
+
+      await db.query("DELETE FROM invites WHERE id = $1 AND company_id = $2 AND email_id = $3", [invitationId, companyId, form.email]);
+    }
 
     req.flash("success", "Account created! Awaiting admin activation.");
     return res.redirect("/login");
@@ -414,7 +505,8 @@ async function login(req, res, next) {
       `
         SELECT
           users.id,
-          users.company_name,
+          users.company_id,
+          users.role,
           users.email,
           users.password,
           users.is_active
@@ -445,6 +537,13 @@ async function login(req, res, next) {
     }
 
     req.session.userId = user.id;
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+      company_id: user.company_id,
+      role: user.role,
+      is_active: user.is_active
+    };
 
     if (user.is_active) {
       return res.redirect("/dashboard");
