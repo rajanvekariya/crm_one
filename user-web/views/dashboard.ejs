@@ -1,135 +1,268 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %> | CrmOne</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brandBlue: "#1a73e8",
-              brandOrange: "#f97316",
-              brandNavy: "#0f172a",
-            },
-          },
-        },
-      };
-    </script>
-  </head>
-  <body class="min-h-screen bg-slate-100 text-slate-900">
-    <header class="border-b border-slate-200 bg-white/90 backdrop-blur sticky top-0 z-50">
-      <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <div class="flex items-center justify-between gap-4">
-          <a href="/dashboard" class="text-2xl font-black text-brandBlue">CrmOne</a>
-          <div class="flex items-center gap-3 lg:hidden">
-            <form action="/logout" method="POST">
-              <button class="rounded-full bg-brandBlue px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700">
-                Log Out
-              </button>
-            </form>
-            <button id="dashboard-hamburger" class="flex flex-col justify-between w-6 h-4.5 bg-transparent border-none cursor-pointer p-0" aria-label="Toggle navigation">
-              <span class="w-full h-0.5 bg-slate-900 rounded transition-all duration-300 transform origin-left"></span>
-              <span class="w-full h-0.5 bg-slate-900 rounded transition-all duration-300"></span>
-              <span class="w-full h-0.5 bg-slate-900 rounded transition-all duration-300 transform origin-left"></span>
-            </button>
-          </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | CrmOne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<%
+  const dashboardUser = (typeof currentUser !== 'undefined' && currentUser)
+    || (typeof user !== 'undefined' && user)
+    || null;
+%>
+<body class="crmone-layout dashboard-page">
+  <%- include('partials/navbar', { user: dashboardUser, currentPage: 'dashboard' }) %>
+
+  <div class="dashboard-wrapper">
+    <main class="main-content">
+      <div class="page-title-bar">
+        <div class="page-title">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.6"></rect>
+            <rect x="11.5" y="2.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.6"></rect>
+            <rect x="2.5" y="11.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.6"></rect>
+            <rect x="11.5" y="11.5" width="5.5" height="5.5" rx="1" stroke="currentColor" stroke-width="1.6"></rect>
+          </svg>
+          <span>My Activity Dashboard</span>
         </div>
-        <nav id="dashboard-nav" class="hidden lg:flex flex-col lg:flex-row flex-wrap items-start lg:items-center gap-y-4 gap-x-6 text-sm font-medium text-slate-600 lg:gap-8 bg-white lg:bg-transparent absolute lg:static top-full left-0 right-0 p-4 lg:p-0 shadow-lg lg:shadow-none transition-all">
-          <a href="/dashboard" class="transition hover:text-brandBlue w-full lg:w-auto <%= title === 'CrmOne Dashboard' ? 'text-brandBlue font-bold' : '' %>">Home</a>
-          <% if (user.role === 'admin') { %>
-            <a href="/team" class="transition hover:text-brandBlue w-full lg:w-auto <%= title === 'Team Management' ? 'text-brandBlue font-bold' : '' %>">Team Management</a>
-          <% } %>
-          <a href="/signup#features" class="transition hover:text-brandBlue w-full lg:w-auto">Features</a>
-          <a href="/signup#agency" class="transition hover:text-brandBlue w-full lg:w-auto">Agency</a>
-          <a href="/signup#pricing" class="transition hover:text-brandBlue w-full lg:w-auto">Pricing</a>
-          <a href="mailto:sales@crmone.com" class="transition hover:text-brandBlue w-full lg:w-auto">Contact Us</a>
-        </nav>
-        <form action="/logout" method="POST" class="hidden lg:block">
-          <button class="rounded-full bg-brandBlue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700">
-            Log Out
-          </button>
-        </form>
       </div>
-    </header>
 
-    <script>
-      const dashHamburger = document.getElementById('dashboard-hamburger');
-      const dashNav = document.getElementById('dashboard-nav');
-      
-      if (dashHamburger && dashNav) {
-        dashHamburger.addEventListener('click', () => {
-          dashNav.classList.toggle('hidden');
-          dashNav.classList.toggle('flex');
-          
-          // Animate hamburger lines
-          const spans = dashHamburger.querySelectorAll('span');
-          if (dashNav.classList.contains('flex')) {
-            spans[0].style.transform = 'rotate(45deg)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg)';
-          } else {
-            spans[0].style.transform = 'rotate(0)';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'rotate(0)';
-          }
-        });
-      }
-    </script>
+      <div class="content-inner">
+        <section class="dashboard-grid-row1">
+          <article class="dash-card dash-card--blue">
+            <div class="dash-card-header">
+              <div class="dash-card-title dash-card-title--muted">
+                <span class="card-icon" style="color:#3182CE;">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.6"></circle>
+                    <path d="M3.5 15c0-2 1.8-3.5 3.5-3.5S10.5 13 10.5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    <rect x="11.5" y="7" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.6"></rect>
+                  </svg>
+                </span>
+                <span>Latest Assigned Contact</span>
+              </div>
+              <div class="card-header-right">
+                <span class="count-badge">0</span>
+                <span class="header-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"></rect>
+                    <path d="M6 2.5v3M14 2.5v3M3 8h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="dash-card-body">
+              <svg class="card-illustration" viewBox="0 0 200 140" aria-hidden="true">
+                <circle cx="95" cy="68" r="48" fill="#DCEBFF"></circle>
+                <circle cx="92" cy="52" r="10" fill="#1A1A2E"></circle>
+                <path d="M79 94c0-14 7-23 13-23s13 9 13 23" fill="#1A1A2E"></path>
+                <rect x="106" y="64" width="34" height="22" rx="3" fill="#FFFFFF" stroke="#60A5FA" stroke-width="2"></rect>
+                <rect x="109" y="68" width="28" height="3" rx="1.5" fill="#93C5FD"></rect>
+                <rect x="109" y="75" width="18" height="3" rx="1.5" fill="#60A5FA"></rect>
+                <rect x="60" y="66" width="16" height="16" rx="4" fill="#FFFFFF" stroke="#60A5FA" stroke-width="2"></rect>
+                <rect x="45" y="48" width="12" height="12" rx="3" fill="#60A5FA"></rect>
+                <rect x="145" y="44" width="10" height="10" rx="2" fill="#FFFFFF"></rect>
+                <ellipse cx="100" cy="70" rx="26" ry="12" fill="#F8C6B3" opacity=".75"></ellipse>
+              </svg>
+              <span class="no-data-text">No data found</span>
+            </div>
+          </article>
 
-    <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <section class="rounded-[2rem] bg-brandNavy p-6 text-white shadow-2xl shadow-slate-300/60 sm:p-8">
-        <p class="text-sm font-medium uppercase tracking-[0.2em] text-brandOrange">Welcome</p>
-        <div class="flex items-center gap-4 mt-3">
-          <h1 class="text-3xl font-bold sm:text-4xl"><%= user.company_name %></h1>
-          <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold <%= user.role === 'admin' ? 'bg-blue-500 text-white' : 'bg-slate-500 text-white' %>">
-            <%= user.role === 'admin' ? 'Admin' : 'User' %>
-          </span>
-        </div>
-        <p class="mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
-          Your CrmOne workspace is active and ready. Here’s a quick summary of your current plan and account access.
-        </p>
-      </section>
+          <article class="dash-card dash-card--green">
+            <div class="dash-card-header">
+              <div class="dash-card-title dash-card-title--muted">
+                <span class="card-icon" style="color:#2F855A;">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <rect x="3.5" y="5" width="13" height="10" rx="1.5" stroke="currentColor" stroke-width="1.6"></rect>
+                    <path d="M6 14V9M10 14V6M14 14v-2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+                <span>Latest Assigned Accounts</span>
+              </div>
+              <div class="card-header-right">
+                <span class="count-badge">0</span>
+                <span class="header-icon" aria-hidden="true">
+                  <svg viewBox="0 0 20 20" fill="none">
+                    <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"></rect>
+                    <path d="M6 2.5v3M14 2.5v3M3 8h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="dash-card-body">
+              <svg class="card-illustration" viewBox="0 0 200 140" aria-hidden="true">
+                <circle cx="94" cy="68" r="48" fill="#DDFBE5"></circle>
+                <circle cx="76" cy="56" r="10" fill="#1A1A2E"></circle>
+                <path d="M62 95c0-12 6-20 14-20s14 8 14 20" fill="#1A1A2E"></path>
+                <rect x="118" y="42" width="40" height="46" rx="4" fill="#FFFFFF" stroke="#34D399" stroke-width="2"></rect>
+                <rect x="126" y="71" width="6" height="12" rx="2" fill="#86EFAC"></rect>
+                <rect x="135" y="62" width="6" height="21" rx="2" fill="#34D399"></rect>
+                <rect x="144" y="52" width="6" height="31" rx="2" fill="#059669"></rect>
+                <rect x="44" y="46" width="12" height="12" rx="2" fill="#FFFFFF"></rect>
+              </svg>
+              <span class="no-data-text">No data found</span>
+            </div>
+          </article>
+        </section>
 
-      <section class="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <article class="rounded-3xl bg-white p-6 shadow-sm">
-          <p class="text-sm text-slate-500">Plan</p>
-          <h2 class="mt-4 text-2xl font-bold"><%= user.plan_name || "N/A" %></h2>
-        </article>
-        <article class="rounded-3xl bg-white p-6 shadow-sm">
-          <p class="text-sm text-slate-500">Billing Cycle</p>
-          <h2 class="mt-4 text-2xl font-bold capitalize"><%= user.billing_cycle %></h2>
-        </article>
-        <article class="rounded-3xl bg-white p-6 shadow-sm">
-          <p class="text-sm text-slate-500">Users Allowed</p>
-          <h2 class="mt-4 text-2xl font-bold"><%= user.max_users || 0 %></h2>
-        </article>
-        <article class="rounded-3xl bg-white p-6 shadow-sm">
-          <p class="text-sm text-slate-500">Member Since</p>
-          <h2 class="mt-4 text-2xl font-bold"><%= new Date(user.created_at).toLocaleDateString() %></h2>
-        </article>
-      </section>
+        <section class="dashboard-grid-row2">
+          <article class="dash-card dash-card--red">
+            <div class="dash-card-header">
+              <div class="dash-card-title dash-card-title--red">
+                <span class="card-icon" style="color:#E53E3E;">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <path d="M4 10.5 7.5 14l8-8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <rect x="3.5" y="4.5" width="13" height="10.5" rx="2" stroke="currentColor" stroke-width="1.5"></rect>
+                  </svg>
+                </span>
+                <span>Latest Assigned Deal</span>
+              </div>
+              <div class="card-header-right">
+                <span class="count-badge">0</span>
+                <button class="card-ghost-select" type="button">sales pipeline ▾</button>
+              </div>
+            </div>
+            <div class="dash-card-body">
+              <svg class="card-illustration card-illustration--small" viewBox="0 0 200 140" aria-hidden="true">
+                <circle cx="100" cy="68" r="48" fill="#FFE2E2"></circle>
+                <circle cx="78" cy="54" r="10" fill="#1A1A2E"></circle>
+                <circle cx="122" cy="56" r="10" fill="#F8B4B4"></circle>
+                <path d="M64 95c4-11 12-18 20-18s16 7 20 18" fill="#1A1A2E"></path>
+                <path d="M104 95c4-11 12-18 20-18s16 7 20 18" fill="#1A1A2E"></path>
+                <rect x="126" y="42" width="26" height="36" rx="4" fill="#FFFFFF" stroke="#F87171" stroke-width="2"></rect>
+                <path d="M131 51h16M131 59h10M131 67h12" stroke="#F87171" stroke-width="2" stroke-linecap="round"></path>
+                <path d="M86 74c4 4 10 6 14 6s10-2 14-6" stroke="#F26522" stroke-width="5" stroke-linecap="round"></path>
+              </svg>
+              <span class="no-data-text">No data found</span>
+            </div>
+          </article>
+
+          <article class="dash-card dash-card--orange">
+            <div class="dash-card-header">
+              <div class="dash-card-title dash-card-title--orange">
+                <span class="card-icon" style="color:#DD6B20;">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <rect x="4.5" y="4.5" width="11" height="11.5" rx="1.5" stroke="currentColor" stroke-width="1.6"></rect>
+                    <path d="M7 8h6M7 11h6M7 14h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+                <span>Latest Assigned Task</span>
+              </div>
+              <div class="card-header-right">
+                <span class="count-badge">0</span>
+              </div>
+            </div>
+            <div class="dash-card-body">
+              <svg class="card-illustration card-illustration--small" viewBox="0 0 200 140" aria-hidden="true">
+                <circle cx="100" cy="68" r="48" fill="#FDEACD"></circle>
+                <circle cx="100" cy="50" r="10" fill="#1A1A2E"></circle>
+                <path d="M82 95c5-12 10-17 18-17s13 5 18 17" fill="#1A1A2E"></path>
+                <rect x="126" y="42" width="26" height="34" rx="4" fill="#FFFFFF" stroke="#F59E0B" stroke-width="2"></rect>
+                <path d="M130 53h18M130 60h18M130 67h12" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"></path>
+                <rect x="44" y="48" width="12" height="12" rx="3" fill="#F59E0B"></rect>
+                <rect x="54" y="58" width="10" height="10" rx="2" fill="#FB923C"></rect>
+              </svg>
+              <span class="no-data-text">No data found</span>
+            </div>
+          </article>
+
+          <article class="dash-card dash-card--purple">
+            <div class="dash-card-header">
+              <div class="dash-card-title dash-card-title--blue">
+                <span class="card-icon" style="color:#3B82F6;">
+                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                    <rect x="3.5" y="4.5" width="13" height="11.5" rx="2" stroke="currentColor" stroke-width="1.6"></rect>
+                    <path d="M6 3v3M14 3v3M3.5 8h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                  </svg>
+                </span>
+                <span>Latest Assigned Appointments</span>
+              </div>
+              <div class="card-header-right">
+                <span class="count-badge">0</span>
+              </div>
+            </div>
+            <div class="dash-card-body">
+              <svg class="card-illustration card-illustration--small" viewBox="0 0 200 140" aria-hidden="true">
+                <circle cx="98" cy="68" r="48" fill="#DEE7FF"></circle>
+                <circle cx="82" cy="53" r="10" fill="#1A1A2E"></circle>
+                <path d="M68 95c0-13 6-20 14-20s14 7 14 20" fill="#1A1A2E"></path>
+                <rect x="104" y="58" width="42" height="26" rx="4" fill="#FFFFFF" stroke="#818CF8" stroke-width="2"></rect>
+                <path d="M110 61h30M110 68h18M110 75h22" stroke="#818CF8" stroke-width="2" stroke-linecap="round"></path>
+                <rect x="60" y="85" width="44" height="8" rx="4" fill="#93C5FD"></rect>
+                <rect x="58" y="74" width="28" height="4" rx="2" fill="#A5B4FC"></rect>
+              </svg>
+              <span class="no-data-text">No data found</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="followup-card">
+          <div class="followup-header">
+            <div class="dash-card-title dash-card-title--dark">
+              <span class="card-icon" style="color:#2D3748;">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="7" cy="7" r="2.3" stroke="currentColor" stroke-width="1.5"></circle>
+                  <path d="M4 14.5c0-1.9 1.5-3.5 3.5-3.5S11 12.6 11 14.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path>
+                  <circle cx="14.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.4"></circle>
+                  <path d="M14.5 6.5v2l1.2.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </span>
+              <span>Followup</span>
+            </div>
+            <div class="followup-actions">
+              <button class="filter-btn" type="button" aria-label="Filter followups">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M4 6h12M4 10h12M4 14h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                </svg>
+              </button>
+              <button class="add-btn" type="button" aria-label="Add followup">+</button>
+            </div>
+          </div>
+          <div class="followup-tabs">
+            <button class="tab-btn active" type="button">Upcoming</button>
+            <button class="tab-btn" type="button">Past</button>
+          </div>
+          <div class="followup-content"></div>
+        </section>
+      </div>
     </main>
 
-    <footer class="border-t border-slate-200 bg-white">
-      <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-sm text-slate-500 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-        <div class="flex flex-wrap items-center gap-3">
-          <span>Terms &amp; Conditions</span>
-          <span>Privacy Policy</span>
-          <span>Copyright CrmOne.Com © 2022</span>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-          <span>+91 7079409099</span>
-          <span>+91 7227045458</span>
-          <span>Facebook</span>
-          <span>Instagram</span>
-          <span>LinkedIn</span>
-          <span>Twitter</span>
-          <span>Pinterest</span>
-        </div>
+    <aside class="right-panel">
+      <div class="timeline-header">
+        <span class="card-icon" style="color:#2D3748;">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M4 6h4M4 10h6M4 14h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+            <circle cx="14.5" cy="6" r="1.5" fill="currentColor"></circle>
+            <circle cx="12.5" cy="10" r="1.5" fill="currentColor"></circle>
+            <circle cx="10.5" cy="14" r="1.5" fill="currentColor"></circle>
+          </svg>
+        </span>
+        <span>Activity Timeline</span>
       </div>
-    </footer>
-  </body>
+      <div class="timeline-empty">
+        <svg class="timeline-illustration" viewBox="0 0 200 170" aria-hidden="true">
+          <line x1="148" y1="10" x2="148" y2="42" stroke="#CBD5E1" stroke-width="4"></line>
+          <path d="M135 42h26l-13 18-13-18Z" fill="#F26522"></path>
+          <rect x="92" y="36" width="64" height="44" rx="7" fill="#F8FAFC" stroke="#CBD5E0" stroke-width="2"></rect>
+          <rect x="104" y="48" width="40" height="4" rx="2" fill="#CBD5E1"></rect>
+          <rect x="104" y="58" width="30" height="4" rx="2" fill="#F26522"></rect>
+          <rect x="104" y="68" width="34" height="4" rx="2" fill="#94A3B8"></rect>
+          <rect x="42" y="118" width="118" height="8" rx="4" fill="#94A3B8"></rect>
+          <circle cx="72" cy="72" r="12" fill="#1A1A2E"></circle>
+          <path d="M63 86h18l9 18H54l9-18Z" fill="#F7A985"></path>
+          <path d="M77 92c10-7 22-8 33-3l16 6" stroke="#F26522" stroke-width="6" stroke-linecap="round"></path>
+          <path d="M107 98h18" stroke="#1A1A2E" stroke-width="5" stroke-linecap="round"></path>
+          <rect x="56" y="92" width="15" height="28" rx="7" fill="#1A1A2E"></rect>
+          <rect x="120" y="92" width="14" height="28" rx="7" fill="#1A1A2E"></rect>
+          <line x1="82" y1="104" x2="90" y2="120" stroke="#1A1A2E" stroke-width="4" stroke-linecap="round"></line>
+        </svg>
+        <p>There is no activity.</p>
+      </div>
+    </aside>
+  </div>
+</body>
 </html>

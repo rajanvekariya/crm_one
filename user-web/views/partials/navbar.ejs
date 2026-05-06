@@ -1,0 +1,93 @@
+<%
+  const navUser = (typeof user !== 'undefined' && user)
+    || (typeof currentUser !== 'undefined' && currentUser)
+    || null;
+  const nameSource = navUser && (navUser.name || navUser.email || 'User') || 'User';
+  const displayName = nameSource.includes('@') ? nameSource.split('@')[0] : nameSource;
+  const initials = displayName
+    .replace(/[._-]+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join('')
+    .toUpperCase() || 'U';
+%>
+
+<nav class="navbar" aria-label="Primary">
+  <div class="navbar-left">
+    <a href="/dashboard" class="brand" aria-label="CrmOne home">
+      <span class="brand__logo"><span>Crm</span><span class="brand__o">O</span><span>ne</span></span>
+      <span class="brand__tag">One Stop Solutions</span>
+    </a>
+
+    <div class="navbar-nav">
+      <a href="#" class="nav-link">
+        <span class="nav-icon" aria-hidden="true">💬</span>
+        <span>Conversations</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="nav-icon" aria-hidden="true">👥</span>
+        <span>Contacts</span>
+        <span class="nav-arrow" aria-hidden="true">▾</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="nav-icon" aria-hidden="true">📣</span>
+        <span>Marketing</span>
+        <span class="nav-arrow" aria-hidden="true">▾</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="nav-icon" aria-hidden="true">📊</span>
+        <span>Sales</span>
+        <span class="nav-arrow" aria-hidden="true">▾</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
+        <span>Workflows</span>
+      </a>
+      <a href="#" class="nav-link">
+        <span class="nav-icon" aria-hidden="true">📋</span>
+        <span>Reports</span>
+        <span class="nav-arrow" aria-hidden="true">▾</span>
+      </a>
+      <% if (navUser && navUser.role === 'admin') { %>
+        <a href="/team" class="nav-link <%= currentPage === 'team' ? 'active' : '' %>">
+          <span class="nav-icon" aria-hidden="true">👥</span>
+          <span>Team</span>
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="navbar-right">
+    <button class="icon-btn" type="button" aria-label="Notifications">
+      <span aria-hidden="true">🔔</span>
+      <span class="icon-badge"></span>
+    </button>
+
+    <button class="phone-btn" type="button" aria-label="Call">
+      <span aria-hidden="true">📞</span>
+    </button>
+
+    <button class="user-pill" type="button" aria-label="User menu">
+      <span class="avatar-circle"><%= initials %></span>
+      <span class="user-pill__name"><%= displayName %></span>
+      <span class="nav-arrow" aria-hidden="true">▾</span>
+    </button>
+
+    <button class="profile-chip" type="button" aria-label="Profile">
+      <span class="profile-avatar" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"></circle>
+          <path d="M4.5 20c1.6-4 4.8-6 7.5-6s5.9 2 7.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+        </svg>
+      </span>
+      <span class="profile-chip__name"><%= displayName %></span>
+      <span class="nav-arrow" aria-hidden="true">▾</span>
+    </button>
+
+    <button class="icon-btn icon-btn--outline" type="button" aria-label="More notifications">
+      <span aria-hidden="true">🔔</span>
+    </button>
+  </div>
+</nav>
