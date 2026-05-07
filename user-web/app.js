@@ -8,7 +8,12 @@ const methodOverride = require("method-override");
 const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
 const teamRoutes = require("./routes/team");
-const { attachCurrentUser } = require("./middlewares/auth");
+const followupRouter = require("./routes/followup");
+const {
+  attachCurrentUser,
+  isAuthenticated: requireAuth,
+  ensureActive: requireActive,
+} = require("./middlewares/auth");
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
@@ -61,6 +66,8 @@ app.use((req, res, next) => {
 app.use(authRoutes);
 app.use(dashboardRoutes);
 app.use(teamRoutes);
+require("./utils/notificationScheduler");
+app.use("/followup", requireAuth, requireActive, followupRouter);
 
 const { initDatabase } = require("./db");
 

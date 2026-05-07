@@ -59,6 +59,8 @@ async function showTeam(req, res, next) {
       members: membersResult.rows,
       pendingInvites: invitesResult.rows,
       currentUser: req.currentUser,
+      user: req.session.user || req.currentUser,
+      currentPage: "team",
       maxUsers,
       totalUsedSlots,
       timezones

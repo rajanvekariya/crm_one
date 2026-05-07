@@ -53,3 +53,33 @@ CREATE TABLE IF NOT EXISTS invites (
   company_id UUID REFERENCES companies(id),
   created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS followups (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  assigned_to UUID REFERENCES users(id) ON DELETE SET NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT DEFAULT '',
+  followup_at TIMESTAMP NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'open'
+    CHECK (status IN ('open', 'completed', 'cancelled')),
+  is_notification_read BOOLEAN NOT NULL DEFAULT false,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE followups
+  ADD COLUMN IF NOT EXISTS whatsapp_images TEXT[] NOT NULL DEFAULT '{}';
+
+ALTER TABLE followups
+  ADD COLUMN IF NOT EXISTS closure_reason VARCHAR(255) DEFAULT '';
+
+ALTER TABLE followups
+  ADD COLUMN IF NOT EXISTS closure_notes TEXT DEFAULT '';
+
+CREATE INDEX IF NOT EXISTS idx_followups_company_followup_at
+  ON followups(company_id, followup_at);
+
+CREATE INDEX IF NOT EXISTS idx_followups_assigned_unread
+  ON followups(assigned_to, is_notification_read, followup_at);
