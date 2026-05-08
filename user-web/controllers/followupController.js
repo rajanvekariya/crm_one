@@ -242,6 +242,10 @@ function validateFollowupInput(body) {
     return { error: "Description is required." };
   }
 
+  if (!assignedTo) {
+    return { error: "Please select a team member or choose yourself." };
+  }
+
   if (!status) {
     return { error: "Invalid follow-up status." };
   }
@@ -303,10 +307,16 @@ async function listPage(req, res, next) {
     const payload = await loadFollowupPageData(req.currentUser);
     const followupRecords = [...payload.upcoming, ...payload.past];
 
+    const currentUserFormatted = {
+      ...req.currentUser,
+      display_name: formatMemberName(req.currentUser.email),
+      initials: formatInitials(req.currentUser.email),
+    };
+
     return res.render("followup", {
       title: "Follow-Up",
       user: req.session.user || req.currentUser,
-      currentUser: req.currentUser,
+      currentUser: currentUserFormatted,
       currentPage: "followup",
       upcoming: payload.upcoming,
       past: payload.past,
@@ -338,7 +348,7 @@ async function createFollowup(req, res, next) {
     } = validation.data;
     const companyId = req.currentUser.company_id;
 
-    if (!(await assertMemberBelongsToCompany(companyId, assignedTo))) {
+    if (assignedTo && !(await assertMemberBelongsToCompany(companyId, assignedTo))) {
       req.flash("error", "Assigned team member was not found.");
       return res.redirect("/followup");
     }

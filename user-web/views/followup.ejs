@@ -58,6 +58,53 @@
       font-size: 12px;
       color: #8C97A8;
     }
+    .crm-followup-closure-note {
+      margin-top: 12px;
+      padding: 10px 15px;
+      background: #F8FAFC;
+      border-left: 3px solid #CBD5E1;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .crm-followup-assignment-toggle {
+      display: flex;
+      background: #F1F5F9;
+      padding: 4px;
+      border-radius: 8px;
+      gap: 4px;
+      margin-bottom: 15px;
+    }
+    .crm-followup-assignment-toggle label {
+      flex: 1;
+      cursor: pointer;
+    }
+    .crm-followup-assignment-toggle input {
+      display: none;
+    }
+    .crm-followup-assignment-toggle span {
+      display: block;
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748B;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .crm-followup-assignment-toggle input:checked + span {
+      background: #FFFFFF;
+      color: #29384C;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .crm-followup-read-only-display {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #29384C;
+      font-weight: 500;
+    }
     .dash-timeline__dot {
       width: 10px;
       height: 10px;
@@ -152,14 +199,6 @@
       object-fit: cover;
       border-radius: 8px;
       border: 1px solid #E2E8F0;
-    }
-    .crm-followup-closure-note {
-      margin-top: 12px;
-      padding: 10px 15px;
-      background: #F8FAFC;
-      border-left: 3px solid #CBD5E1;
-      border-radius: 4px;
-      font-size: 12px;
     }
   </style>
 </head>
@@ -375,15 +414,38 @@
                 </label>
               </div>
 
-              <label class="crm-followup-field">
-                <span>Assign to</span>
-                <select name="assigned_to" data-assignee-select data-card-target="create-assignee-card">
-                  <option value="">Unassigned</option>
+              <div class="crm-followup-field">
+                <span>Assignment Type</span>
+                <div class="crm-followup-assignment-toggle">
+                  <label>
+                    <input type="radio" name="create_assignment_type" value="user" checked data-assignment-toggle data-target-select="create-assigned-select" data-panel="create">
+                    <span>User</span>
+                  </label>
+                  <label>
+                    <input type="radio" name="create_assignment_type" value="team" data-assignment-toggle data-target-select="create-assigned-select" data-panel="create">
+                    <span>Team</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="crm-followup-field" id="create-user-display-container">
+                <span>Assigned to</span>
+                <div class="crm-followup-read-only-display">
+                  <%= currentUser.display_name %> (You)
+                </div>
+              </div>
+
+              <label class="crm-followup-field" id="create-team-select-container" style="display: none;">
+                <span>Assign to Team Member*</span>
+                <select id="create-assigned-select" data-assignee-select data-card-target="create-assignee-card">
+                  <option value="" disabled selected>Select a team member</option>
                   <% teamMembers.forEach((member) => { %>
                     <option value="<%= member.id %>" data-name="<%= member.display_name %>" data-email="<%= member.email %>" data-initials="<%= member.initials %>"><%= member.display_name %> (<%= member.email %>)</option>
                   <% }) %>
                 </select>
               </label>
+
+              <input type="hidden" name="assigned_to" id="create-assigned-to-user" value="<%= currentUser.id %>">
 
               <div class="crm-followup-assignee-card" id="create-assignee-card">
                 <span class="crm-followup-avatar is-empty">NA</span>
@@ -463,15 +525,38 @@
                   </label>
                 </div>
 
-                <label class="crm-followup-field">
-                  <span>Assign to</span>
-                  <select data-assignee-select data-update-assigned-to data-card-target="update-assignee-card">
-                    <option value="">Unassigned</option>
+                <div class="crm-followup-field">
+                  <span>Assignment Type</span>
+                  <div class="crm-followup-assignment-toggle">
+                    <label>
+                      <input type="radio" name="update_assignment_type" value="user" checked data-assignment-toggle data-target-select="update-assigned-select" data-panel="update">
+                      <span>User</span>
+                    </label>
+                    <label>
+                      <input type="radio" name="update_assignment_type" value="team" data-assignment-toggle data-target-select="update-assigned-select" data-panel="update">
+                      <span>Team</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="crm-followup-field" id="update-user-display-container">
+                  <span>Assigned to</span>
+                  <div class="crm-followup-read-only-display">
+                    <%= currentUser.display_name %> (You)
+                  </div>
+                </div>
+
+                <label class="crm-followup-field" id="update-team-select-container" style="display: none;">
+                  <span>Assign to Team Member*</span>
+                  <select id="update-assigned-select" data-assignee-select data-update-assigned-to data-card-target="update-assignee-card">
+                    <option value="" disabled selected>Select a team member</option>
                     <% teamMembers.forEach((member) => { %>
                       <option value="<%= member.id %>" data-name="<%= member.display_name %>" data-email="<%= member.email %>" data-initials="<%= member.initials %>"><%= member.display_name %> (<%= member.email %>)</option>
                     <% }) %>
                   </select>
                 </label>
+
+                <input type="hidden" id="update-assigned-to-user" value="<%= currentUser.id %>">
 
                 <div class="crm-followup-assignee-card" id="update-assignee-card">
                   <span class="crm-followup-avatar is-empty">NA</span>
@@ -712,6 +797,49 @@
       updateClosureNotesInput.value = activeClosureNotes || '';
     }
 
+    function syncAssignmentToggle(toggle) {
+      const panel = toggle.dataset.panel;
+      const type = toggle.value;
+      const userDisplay = document.getElementById(`${panel}-user-display-container`);
+      const teamContainer = document.getElementById(`${panel}-team-select-container`);
+      const teamSelect = document.getElementById(`${panel}-assigned-select`);
+      const userHidden = document.getElementById(`${panel}-assigned-to-user`);
+      const cardId = teamSelect.dataset.cardTarget;
+      const card = document.getElementById(cardId);
+
+      if (type === 'user') {
+        userDisplay.style.display = 'flex';
+        teamContainer.style.display = 'none';
+        teamSelect.name = ''; // Disable select name so it's not sent
+        teamSelect.required = false;
+        if (userHidden) userHidden.name = 'assigned_to';
+
+        // Update card to current user
+        if (card) {
+          const avatar = card.querySelector('.crm-followup-avatar');
+          const name = card.querySelector('strong');
+          const email = card.querySelector('span:last-child');
+          avatar.textContent = '<%= currentUser.initials %>';
+          avatar.classList.remove('is-empty');
+          name.textContent = '<%= currentUser.display_name %>';
+          email.textContent = '<%= currentUser.email %>';
+        }
+      } else {
+        userDisplay.style.display = 'none';
+        teamContainer.style.display = 'flex';
+        teamSelect.name = 'assigned_to';
+        teamSelect.required = true;
+        if (userHidden) userHidden.name = ''; // Disable hidden name
+
+        // Update card to select value
+        updateAssigneeCard(teamSelect);
+      }
+
+      if (panel === 'update') {
+        syncUpdatePayloadFields();
+      }
+    }
+
     function fillUpdatePanel(record) {
       if (!record || !updateForm || !updatePanel) return;
 
@@ -736,6 +864,15 @@
 
       renderImagePreview(updateImages);
       updateAssigneeCard(updateAssignedTo);
+
+      // Handle assignment toggle
+      const isAssignedToMe = record.assigned_to_id === '<%= currentUser.id %>';
+      const assignmentToggle = updatePanel.querySelector(`input[name="update_assignment_type"][value="${isAssignedToMe ? 'user' : 'team'}"]`);
+      if (assignmentToggle) {
+        assignmentToggle.checked = true;
+        syncAssignmentToggle(assignmentToggle);
+      }
+
       syncStatusPanels();
       syncUpdatePayloadFields();
 
@@ -782,16 +919,6 @@
       });
     });
 
-    // Remove entry click listener to satisfy "Follow Button Click Only" requirement
-    /*
-    document.querySelectorAll('.crm-followup-entry').forEach((entry) => {
-      entry.addEventListener('click', (event) => {
-        if (event.target.closest('button, a')) return;
-        fillUpdatePanel(followupMap.get(entry.dataset.followupId));
-      });
-    });
-    */
-
     document.querySelectorAll('[data-close-update-panel]').forEach((button) => {
       button.addEventListener('click', closeUpdatePanel);
     });
@@ -817,6 +944,11 @@
         }
       });
       updateAssigneeCard(select);
+    });
+
+    document.querySelectorAll('[data-assignment-toggle]').forEach((toggle) => {
+      toggle.addEventListener('change', () => syncAssignmentToggle(toggle));
+      if (toggle.checked) syncAssignmentToggle(toggle);
     });
 
     [
@@ -861,6 +993,13 @@
         window.setTimeout(() => {
           createForm.querySelectorAll('[data-image-input]').forEach((textarea) => renderImagePreview(textarea));
           createForm.querySelectorAll('[data-assignee-select]').forEach((select) => updateAssigneeCard(select));
+          
+          // Reset assignment toggle to User
+          const userToggle = createForm.querySelector('input[name="create_assignment_type"][value="user"]');
+          if (userToggle) {
+            userToggle.checked = true;
+            syncAssignmentToggle(userToggle);
+          }
         }, 0);
       });
     });
@@ -874,7 +1013,7 @@
     }
 
     const openFirstFollowupButton = document.querySelector('[data-open-first-followup]');
-    if (openFirstFollowupButton) {
+    if (openFirstFirstButton) {
       openFirstFollowupButton.addEventListener('click', () => {
         const firstRecord = followupRecords[0];
         if (firstRecord) {
