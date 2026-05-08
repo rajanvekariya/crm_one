@@ -83,3 +83,47 @@ CREATE INDEX IF NOT EXISTS idx_followups_company_followup_at
 
 CREATE INDEX IF NOT EXISTS idx_followups_assigned_unread
   ON followups(assigned_to, is_notification_read, followup_at);
+
+CREATE TABLE IF NOT EXISTS tasks (
+  id SERIAL PRIMARY KEY,
+  company_id UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  due_date DATE,
+  due_time TIME,
+  type VARCHAR(50) DEFAULT 'ToDo',
+  priority VARCHAR(20) DEFAULT 'Medium',
+  status VARCHAR(50) DEFAULT 'Not Started',
+  tag VARCHAR(100),
+  assigned_to UUID REFERENCES users(id) ON DELETE SET NULL,
+  assigned_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS task_comments (
+  id SERIAL PRIMARY KEY,
+  task_id INT REFERENCES tasks(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  comment TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS task_attachments (
+  id SERIAL PRIMARY KEY,
+  task_id INT REFERENCES tasks(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  filename VARCHAR(255) NOT NULL,
+  filepath VARCHAR(500) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_tasks_company_created_at
+  ON tasks(company_id, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_tasks_company_status
+  ON tasks(company_id, status);
+
+CREATE INDEX IF NOT EXISTS idx_tasks_company_due_date
+  ON tasks(company_id, due_date);

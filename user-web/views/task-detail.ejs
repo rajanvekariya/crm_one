@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Detail | CrmOne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/task.css">
+</head>
+<%
+  const detailUser = (typeof currentUser !== 'undefined' && currentUser) || (typeof user !== 'undefined' && user) || null;
+%>
+<body class="crmone-layout dashboard-page">
+  <%- include('partials/navbar', { user: detailUser, currentPage: typeof currentPage !== 'undefined' ? currentPage : 'task' }) %>
+
+  <div class="dashboard-wrapper">
+    <main class="main-content">
+      <div class="task-page">
+        <div class="page-title-bar">
+          <span class="page-icon">☑</span>
+          <span>Task Detail</span>
+        </div>
+
+        <div class="task-detail-shell">
+          <% if (success && success.length) { %>
+            <div class="task-alert task-alert--success"><%= success[0] %></div>
+          <% } %>
+          <% if (error && error.length) { %>
+            <div class="task-alert task-alert--error"><%= error[0] %></div>
+          <% } %>
+
+          <div class="task-detail-layout">
+            <aside class="detail-left">
+              <a href="/task" class="detail-back-link">× Back to tasks</a>
+
+              <div>
+                <h3 class="detail-section-title">Status Details</h3>
+
+                <form id="taskUpdateForm" action="/task/<%= task.id %>/update" method="POST">
+                  <input type="hidden" name="title" id="updateTitleHidden" value="<%= task.title %>">
+                  <input type="hidden" name="description" id="updateDescriptionHidden">
+
+                  <div class="detail-row">
+                    <div class="detail-label">● Status</div>
+                    <div class="detail-field">
+                      <select name="status" class="form-input detail-input">
+                        <% taskStatuses.forEach((statusName) => { %>
+                          <option value="<%= statusName %>" <%= task.status === statusName ? 'selected' : '' %>><%= statusName %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="detail-row">
+                    <div class="detail-label">📅 Due Date</div>
+                    <div class="detail-field">
+                      <input type="date" name="due_date" class="form-input detail-input" value="<%= task.due_date %>">
+                    </div>
+                  </div>
+
+                  <div class="detail-row">
+                    <div class="detail-label">🕐 Due Time</div>
+                    <div class="detail-field">
+                      <input type="time" name="due_time" class="form-input detail-input" value="<%= task.due_time %>">
+                    </div>
+                  </div>
+
+                  <div class="detail-row">
+                    <div class="detail-label">🔴 Priority</div>
+                    <div class="detail-field">
+                      <select name="priority" class="form-input detail-input">
+                        <% taskPriorities.forEach((priority) => { %>
+                          <option value="<%= priority %>" <%= task.priority === priority ? 'selected' : '' %>><%= priority %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="detail-row">
+                    <div class="detail-label">📧 Type</div>
+                    <div class="detail-field">
+                      <select name="type" class="form-input detail-input">
+                        <% taskTypes.forEach((type) => { %>
+                          <option value="<%= type %>" <%= task.type === type ? 'selected' : '' %>><%= type %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="detail-row detail-row--stacked">
+                    <div class="detail-label">🏷 Tag</div>
+                    <div class="detail-field detail-field--full">
+                      <input type="text" name="tag" class="form-input detail-input" value="<%= task.tag || '' %>" placeholder="Add tag...">
+                    </div>
+                  </div>
+
+                  <div class="assign-toggle detail-assign-toggle">
+                    <label><input type="radio" name="assignType" value="users" checked> Users</label>
+                    <label><input type="radio" name="assignType" value="teams"> Teams</label>
+                  </div>
+
+                  <div class="detail-stack">
+                    <label class="detail-field-label" for="detailAssignedTo">Assign To</label>
+                    <select id="detailAssignedTo" name="assigned_to" class="form-input">
+                      <option value="">Unassigned</option>
+                      <% teamMembers.forEach((member) => { %>
+                        <option value="<%= member.id %>" <%= task.assigned_to === member.id ? 'selected' : '' %>><%= member.email %></option>
+                      <% }) %>
+                    </select>
+                  </div>
+
+                  <div class="detail-stack">
+                    <label class="detail-field-label" for="detailAssignedBy">Assign By</label>
+                    <select id="detailAssignedBy" name="assigned_by" class="form-input">
+                      <option value="">Unassigned</option>
+                      <% teamMembers.forEach((member) => { %>
+                        <option value="<%= member.id %>" <%= task.assigned_by === member.id ? 'selected' : '' %>><%= member.email %></option>
+                      <% }) %>
+                    </select>
+                  </div>
+
+                  <div class="detail-meta">
+                    <div><span>Created by:</span> <strong><%= task.created_by_email || '—' %></strong></div>
+                    <div><span>Updated:</span> <strong><%= task.updated_at_label %></strong></div>
+                  </div>
+
+                  <button type="button" class="btn-primary detail-update-btn" onclick="submitTaskUpdate()">
+                    Update Task
+                  </button>
+                </form>
+              </div>
+            </aside>
+
+            <section class="detail-right">
+              <div class="detail-content-card">
+                <label class="detail-main-label" for="taskTitleInput">Title *</label>
+                <input id="taskTitleInput" type="text" class="detail-title-input" value="<%= task.title %>" placeholder="Task title">
+
+                <label class="detail-main-label">Description</label>
+                <div class="rich-toolbar detail-rich-toolbar">
+                  <button type="button" data-command="undo">↺</button>
+                  <button type="button" data-command="redo">↻</button>
+                  <button type="button" data-command="bold">B</button>
+                  <button type="button" data-command="italic">I</button>
+                  <button type="button" data-command="underline">U</button>
+                  <button type="button" data-command="strikeThrough">S</button>
+                  <button type="button" data-command="insertUnorderedList">•</button>
+                  <button type="button" data-command="createLink" data-prompt="Paste a link">🔗</button>
+                </div>
+                <div id="taskDetailDescription" class="task-description-display task-description-editor" contenteditable="true" data-placeholder="Type here..."><%- task.description %></div>
+
+                <div class="detail-associated-header">Associated with records</div>
+                <div class="detail-associated-grid">
+                  <div class="assoc-card assoc-card--blue">
+                    <span>👥 Contacts</span>
+                    <div class="assoc-card__inner">No Contacts Associated</div>
+                  </div>
+                  <div class="assoc-card assoc-card--orange">
+                    <span>🏢 Accounts</span>
+                    <div class="assoc-card__inner">No Account Associated</div>
+                  </div>
+                  <div class="assoc-card assoc-card--green">
+                    <span>🤝 Deals</span>
+                    <div class="assoc-card__inner">No Deal Associated</div>
+                  </div>
+                </div>
+
+                <section class="attachments-section">
+                  <div class="section-heading">Attachments (<%= attachments.length %>)</div>
+
+                  <% if (attachments.length) { %>
+                    <div class="attachment-list">
+                      <% attachments.forEach((attachment) => { %>
+                        <a href="<%= attachment.filepath %>" class="attachment-item" target="_blank" rel="noopener">
+                          <div class="attachment-item__name"><%= attachment.filename %></div>
+                          <div class="attachment-item__meta">
+                            <span><%= attachment.email || 'Unknown user' %></span>
+                            <span><%= attachment.created_at_label %></span>
+                          </div>
+                        </a>
+                      <% }) %>
+                    </div>
+                  <% } else { %>
+                    <div class="empty-state-inline">No attachments yet.</div>
+                  <% } %>
+
+                  <form action="/task/<%= task.id %>/attachment" method="POST" enctype="multipart/form-data" class="attachment-upload-form">
+                    <input type="file" name="attachment" class="form-input attachment-input" required>
+                    <button type="submit" class="btn-secondary attachment-upload-btn">Upload Attachment</button>
+                  </form>
+                </section>
+
+                <section class="comments-section">
+                  <h3>Comments (<%= comments.length %>)</h3>
+
+                  <% comments.forEach((comment) => { %>
+                    <div class="comment-item">
+                      <div class="comment-avatar"><%= comment.email ? comment.email[0].toUpperCase() : 'U' %></div>
+                      <div class="comment-body">
+                        <div class="comment-text"><%= comment.comment %></div>
+                        <div class="comment-date"><%= comment.created_at_label %></div>
+                      </div>
+                    </div>
+                  <% }) %>
+
+                  <% if (!comments.length) { %>
+                    <div class="empty-state-inline">No comments yet.</div>
+                  <% } %>
+
+                  <form action="/task/<%= task.id %>/comment" method="POST" class="comment-form">
+                    <textarea name="comment" class="form-input" rows="3" placeholder="Enter Comments..."></textarea>
+                    <button type="submit" class="btn-primary comment-submit-btn">Post Your Comment</button>
+                  </form>
+                </section>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function bindDetailToolbar() {
+      document.querySelectorAll('.detail-rich-toolbar button').forEach((button) => {
+        button.addEventListener('click', function () {
+          const command = this.dataset.command;
+          const promptLabel = this.dataset.prompt;
+          let value = null;
+
+          if (promptLabel) {
+            value = window.prompt(promptLabel, 'https://');
+            if (!value) return;
+          }
+
+          document.getElementById('taskDetailDescription').focus();
+          document.execCommand(command, false, value);
+        });
+      });
+    }
+
+    function submitTaskUpdate() {
+      document.getElementById('updateTitleHidden').value = document.getElementById('taskTitleInput').value.trim();
+      document.getElementById('updateDescriptionHidden').value = document.getElementById('taskDetailDescription').innerHTML;
+      document.getElementById('taskUpdateForm').submit();
+    }
+
+    bindDetailToolbar();
+  </script>
+</body>
+</html>

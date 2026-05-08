@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task | CrmOne</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/task.css">
+</head>
+<% const taskUser=(typeof currentUser !=='undefined' && currentUser) || (typeof user !=='undefined' && user) || null;
+  const taskColumns=[ { name: 'Not Started' , color: '#F97316' , icon: '📋' , tasks: notStarted || [] }, {
+  name: 'In Progress' , color: '#3B82F6' , icon: '📋' , tasks: inProgress || [] }, { name: 'Waiting' , color: '#10B981'
+  , icon: '📋' , tasks: waiting || [] }, { name: 'Completed' , color: '#8B5CF6' , icon: '📋' , tasks: completed || [] },
+  { name: 'Deferred' , color: '#EC4899' , icon: '📋' , tasks: deferred || [] } ]; const
+  taskStatuses=taskColumns.map((column)=> column.name);
+  const taskTypes = ['ToDo', 'Email', 'Call', 'Meeting'];
+  const taskPriorities = ['Low', 'Medium', 'High'];
+  const initialTasksJson = JSON.stringify((tasks || []).map((task) => ({
+  id: task.id,
+  title: task.title,
+  due_date: task.due_date,
+  due_time: task.due_time,
+  due_date_label: task.due_date_label,
+  due_time_label: task.due_time_label,
+  priority: task.priority,
+  status: task.status,
+  type: task.type,
+  tag: task.tag,
+  assigned_to_email: task.assigned_to_email
+  }))).replace(/</g, '\\u003c' ); const teamMembersJson=JSON.stringify((teamMembers || []).map((member)=> ({
+  id: member.id,
+  email: member.email
+  }))).replace(/</g, '\\u003c' ); %>
+
+  <body class="crmone-layout dashboard-page">
+    <%- include('partials/navbar', { user: taskUser, currentPage: typeof currentPage !=='undefined' ? currentPage
+      : 'task' }) %>
+
+      <div class="dashboard-wrapper">
+        <main class="main-content">
+          <div class="task-page">
+            <div class="page-title-bar">
+              <span class="page-icon">☑</span>
+              <span>Task</span>
+            </div>
+
+            <div class="content-inner task-content">
+              <div class="task-shell">
+                <section class="task-surface">
+                  <div class="task-tabs">
+                    <button class="task-tab active" type="button" data-tab="all">✦ All Task</button>
+                    <button class="task-tab" type="button" data-tab="due_today">⚡ Due Today</button>
+                    <button class="task-tab" type="button" data-tab="overdue">⏰ Overdue</button>
+                    <button class="task-tab" type="button" data-tab="upcoming_due">🚀 Upcoming Due</button>
+                  </div>
+
+                  <div class="filter-bar">
+                    <div class="filter-bar-left">
+                      <div class="filter-dropdown">
+                        <button class="filter-btn task-filter-btn" type="button">Users ▾</button>
+                        <div class="filter-menu">
+                          <% teamMembers.forEach((member)=> { %>
+                            <label><input class="user-filter" type="checkbox" value="<%= member.id %>">
+                              <%= member.email %>
+                            </label>
+                            <% }) %>
+                        </div>
+                      </div>
+
+                      <div class="filter-dropdown">
+                        <button class="filter-btn task-filter-btn" type="button">Task Types ▾</button>
+                        <div class="filter-menu">
+                          <% taskTypes.forEach((type)=> { %>
+                            <label><input type="radio" name="type" value="<%= type %>">
+                              <%= type==='ToDo' ? '≡' : type==='Email' ? '✉' : type==='Call' ? '📞' : '👥' %>
+                                <%= type %>
+                            </label>
+                            <% }) %>
+                              <label><input type="radio" name="type" value=""> Clear</label>
+                        </div>
+                      </div>
+
+                      <div class="filter-dropdown">
+                        <button class="filter-btn task-filter-btn" type="button">Task Status ▾</button>
+                        <div class="filter-menu">
+                          <% taskStatuses.forEach((statusName)=> { %>
+                            <label><input type="radio" name="status" value="<%= statusName %>">
+                              <%= statusName %>
+                            </label>
+                            <% }) %>
+                              <label><input type="radio" name="status" value=""> Clear</label>
+                        </div>
+                      </div>
+
+                      <div class="filter-dropdown">
+                        <button class="filter-btn task-filter-btn" type="button">Priority ▾</button>
+                        <div class="filter-menu">
+                          <label><input type="radio" name="priority" value="Low"> 🟢 Low</label>
+                          <label><input type="radio" name="priority" value="Medium"> 🟡 Medium</label>
+                          <label><input type="radio" name="priority" value="High"> 🔴 High</label>
+                          <label><input type="radio" name="priority" value=""> Clear</label>
+                        </div>
+                      </div>
+
+                      <div class="filter-dropdown">
+                        <button class="filter-btn task-filter-btn" type="button">Select Tag ▾</button>
+                        <div class="filter-menu">
+                          <div class="filter-menu-inline">
+                            <input type="text" placeholder="Search tag..." class="tag-search form-input">
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="filter-dropdown">
+                        <button class="filter-btn task-filter-btn" type="button">Date Range ▾</button>
+                        <div class="filter-menu task-date-filter-menu">
+                          <label class="task-date-filter-label" for="dateFrom">From</label>
+                          <input type="date" id="dateFrom" class="form-input">
+                          <label class="task-date-filter-label" for="dateTo">To</label>
+                          <input type="date" id="dateTo" class="form-input">
+                          <button type="button" onclick="applyDateFilter()"
+                            class="btn-primary task-apply-btn">Apply</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="filter-bar-right">
+                      <button class="icon-circle-btn" type="button" onclick="searchTasks()" title="Search">🔍</button>
+                      <button class="icon-circle-btn" type="button" onclick="location.reload()"
+                        title="Refresh">↺</button>
+                      <button class="icon-circle-btn" type="button" onclick="exportTasks()" title="Export">⬇</button>
+                      <button class="icon-circle-btn" type="button" onclick="deleteSelectedTasks()"
+                        title="Delete selected">🗑</button>
+                      <button class="view-toggle-btn" id="listViewBtn" type="button" onclick="switchView('list')"
+                        title="List view">≡</button>
+                      <button class="view-toggle-btn active" id="kanbanViewBtn" type="button"
+                        onclick="switchView('kanban')" title="Kanban view">⊞</button>
+                      <button class="task-create-btn" type="button" onclick="openCreatePanel()">+ Task</button>
+                    </div>
+                  </div>
+
+                  <div id="searchBar" class="task-search-bar" style="display:none">
+                    <input type="text" id="searchInput" placeholder="Search by task name..."
+                      class="form-input task-search-input" oninput="debounceSearch(this.value)">
+                  </div>
+
+                  <% if (success && success.length) { %>
+                    <div class="task-alert task-alert--success">
+                      <%= success[0] %>
+                    </div>
+                    <% } %>
+                      <% if (error && error.length) { %>
+                        <div class="task-alert task-alert--error">
+                          <%= error[0] %>
+                        </div>
+                        <% } %>
+
+                          <div class="task-workspace">
+                            <div id="kanbanView" class="kanban-board">
+                              <% taskColumns.forEach((column)=> { %>
+                                <div class="kanban-col" data-status="<%= column.name %>"
+                                  data-color="<%= column.color %>">
+                                  <div class="kanban-col-header">
+                                    <span class="col-title">
+                                      <%= column.name %>
+                                    </span>
+                                    <span class="col-count">
+                                      <%= column.icon %>
+                                        <%= column.tasks.length %>
+                                    </span>
+                                  </div>
+
+                                  <div class="cards-area">
+                                    <% if (!column.tasks.length) { %>
+                                      <div class="empty-col">No tasks</div>
+                                      <% } %>
+
+                                        <% column.tasks.forEach((task)=> { %>
+                                          <% const priorityColor=task.priority==='High' ? '#EF4444' :
+                                            task.priority==='Medium' ? '#F59E0B' : '#10B981' ; %>
+                                            <div class="task-card" data-task-id="<%= task.id %>">
+                                              <div class="task-card-header">
+                                                <span class="task-card-title">
+                                                  <%= task.title %>
+                                                </span>
+                                                <div class="task-card-menu">
+                                                  <button class="dots-btn" type="button"
+                                                    data-task-id="<%= task.id %>">⋮</button>
+                                                  <div class="card-dropdown" id="menu-<%= task.id %>">
+                                                    <div class="card-dropdown-section">
+                                                      <div class="dropdown-section-label">ACTION</div>
+                                                      <a href="/task/<%= task.id %>" class="card-dropdown-item">Edit
+                                                        task</a>
+                                                    </div>
+                                                    <div class="card-dropdown-section">
+                                                      <div class="dropdown-section-label">STATUS</div>
+                                                      <% taskStatuses.forEach((statusName)=> { %>
+                                                        <button class="card-dropdown-item status-btn" type="button"
+                                                          data-task-id="<%= task.id %>" data-status="<%= statusName %>">
+                                                          <%= statusName %>
+                                                        </button>
+                                                        <% }) %>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                                <span class="task-card-cal">📅</span>
+                                              </div>
+
+                                              <div class="task-card-meta">
+                                                <span class="task-date">
+                                                  📅
+                                                  <%= task.due_date_label !=='—' ? task.due_date_label : 'No due date'
+                                                    %>
+                                                    <%= task.due_time_label !=='—' ? task.due_time_label : '' %>
+                                                </span>
+                                                <span class="task-priority">
+                                                  Priority
+                                                  <span class="priority-dot" data-color="<%= priorityColor %>"></span>
+                                                </span>
+                                              </div>
+
+                                              <div class="task-card-footer">
+                                                <div class="task-avatar"
+                                                  title="<%= task.assigned_to_email || 'Unassigned' %>">
+                                                  <%= task.assigned_to_email ? task.assigned_to_email[0].toUpperCase()
+                                                    : '?' %>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            <% }) %>
+                                  </div>
+
+                                  <button class="add-task-btn" type="button" data-add-status="<%= column.name %>">
+                                    + Add Task
+                                  </button>
+                                </div>
+                                <% }) %>
+                            </div>
+
+                            <div id="listView" style="display:none" class="list-view-wrapper">
+                              <div class="task-table-scroll">
+                                <table class="task-table">
+                                  <thead>
+                                    <tr>
+                                      <th><input type="checkbox" id="selectAll"></th>
+                                      <th>Title</th>
+                                      <th>Priority</th>
+                                      <th>Status</th>
+                                      <th>Type</th>
+                                      <th>Due Date</th>
+                                      <th>Assigned To</th>
+                                      <th>Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody id="taskTableBody">
+                                    <% if (tasks.length) { %>
+                                      <% tasks.forEach((task)=> { %>
+                                        <tr class="task-row" data-task-id="<%= task.id %>" style="cursor:pointer">
+                                          <td data-label="Select" onclick="event.stopPropagation()">
+                                            <input type="checkbox" class="task-checkbox" value="<%= task.id %>">
+                                          </td>
+                                          <td data-label="Title">
+                                            <%= task.title %>
+                                          </td>
+                                          <td data-label="Priority">
+                                            <span class="priority-badge priority-<%= task.priority.toLowerCase() %>">
+                                              <%= task.priority %>
+                                            </span>
+                                          </td>
+                                          <td data-label="Status">
+                                            <span class="status-badge">
+                                              <%= task.status %>
+                                            </span>
+                                          </td>
+                                          <td data-label="Type">
+                                            <%= task.type %>
+                                          </td>
+                                          <td data-label="Due Date">
+                                            <%= task.due_date_label !=='—' ? task.due_date_label : '—' %>
+                                          </td>
+                                          <td data-label="Assigned To">
+                                            <%= task.assigned_to_email || '—' %>
+                                          </td>
+                                          <td data-label="Actions" onclick="event.stopPropagation()">
+                                            <div class="task-row-actions">
+                                              <a href="/task/<%= task.id %>" class="action-link">View</a>
+                                              <form action="/task/<%= task.id %>/delete" method="POST"
+                                                onsubmit="return confirm('Delete this task?')">
+                                                <button type="submit" class="action-link danger">Delete</button>
+                                              </form>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                        <% }) %>
+                                          <% } else { %>
+                                            <tr class="task-table-empty-row">
+                                              <td colspan="8">No tasks found yet.</td>
+                                            </tr>
+                                            <% } %>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <div id="panelOverlay" class="panel-overlay" style="display:none"></div>
+
+      <aside id="createTaskPanel" class="create-task-panel" aria-hidden="true">
+        <div class="create-panel-header">
+          <div>
+            <h2>Add Task</h2>
+            <button type="button" class="associate-link">You have associate 0 data</button>
+          </div>
+          <button type="button" class="panel-close-btn" onclick="closeCreatePanel()">×</button>
+        </div>
+
+        <form id="createTaskForm" action="/task/create" method="POST" class="create-task-form">
+          <div class="create-panel-body">
+            <div class="form-group">
+              <label for="createTitle">Title *</label>
+              <input id="createTitle" type="text" name="title" class="form-input" placeholder="Task title" required>
+            </div>
+
+            <div class="form-group">
+              <label>Description</label>
+              <div class="rich-toolbar">
+                <button type="button" data-command="undo">↺</button>
+                <button type="button" data-command="redo">↻</button>
+                <button type="button" data-command="bold">B</button>
+                <button type="button" data-command="italic">I</button>
+                <button type="button" data-command="underline">U</button>
+                <button type="button" data-command="strikeThrough">S</button>
+                <button type="button" data-command="insertUnorderedList">•</button>
+                <button type="button" data-command="createLink" data-prompt="Paste a link">🔗</button>
+              </div>
+              <div contenteditable="true" class="rich-editor" id="taskDescription" data-placeholder="Type here...">
+              </div>
+              <input type="hidden" name="description" id="descriptionHidden">
+            </div>
+
+            <div class="task-grid task-grid--4">
+              <div class="form-group">
+                <label for="createDueDate">Due date</label>
+                <div class="input-with-icon">
+                  <span>📅</span>
+                  <input id="createDueDate" type="date" name="due_date" class="plain-input">
+                  <button type="button" onclick="clearField('createDueDate')">×</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="createDueTime">Due time</label>
+                <div class="input-with-icon">
+                  <span>🕐</span>
+                  <input id="createDueTime" type="time" name="due_time" class="plain-input">
+                  <button type="button" onclick="clearField('createDueTime')">×</button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="createType">Type</label>
+                <select id="createType" name="type" class="form-input">
+                  <option value="ToDo">≡ ToDo</option>
+                  <option value="Email">✉ Email</option>
+                  <option value="Call">📞 Call</option>
+                  <option value="Meeting">👥 Meeting</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="createPriority">Priority</label>
+                <select id="createPriority" name="priority" class="form-input">
+                  <option value="Low">🟢 Low</option>
+                  <option value="Medium" selected>🟡 Medium</option>
+                  <option value="High">🔴 High</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="task-grid task-grid--2">
+              <div class="form-group">
+                <label for="createStatus">Status</label>
+                <select id="createStatus" name="status" class="form-input">
+                  <% taskStatuses.forEach((statusName, index)=> { %>
+                    <option value="<%= statusName %>" <%=index===0 ? 'selected' : '' %>>● <%= statusName %>
+                    </option>
+                    <% }) %>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="createTag">Select Tag</label>
+                <input id="createTag" type="text" name="tag" class="form-input" placeholder="Add tag...">
+              </div>
+            </div>
+
+            <div class="assign-toggle">
+              <label><input type="radio" name="assignType" value="users" checked> Users</label>
+              <label><input type="radio" name="assignType" value="teams"> Teams</label>
+            </div>
+
+            <div class="form-group">
+              <label>Assign to</label>
+              <div class="assign-card" id="assignToCard">
+                <div class="avatar-circle">
+                  <%= taskUser && taskUser.email ? taskUser.email[0].toUpperCase() : 'U' %>
+                </div>
+                <div>
+                  <div class="assign-card-title">
+                    <%= taskUser && taskUser.email ? taskUser.email : 'Current User' %> (Me) 📞
+                  </div>
+                  <div class="assign-card-subtitle">✉ <%= taskUser && taskUser.email ? taskUser.email : '—' %>
+                  </div>
+                </div>
+                <button class="remove-assign-btn" type="button"
+                  onclick="clearAssign('createAssignedTo', 'assignToCard')">×</button>
+              </div>
+              <select id="createAssignedTo" name="assigned_to" class="form-input task-select-spacing">
+                <option value="">Unassigned</option>
+                <% teamMembers.forEach((member)=> { %>
+                  <option value="<%= member.id %>" <%=taskUser && member.id===taskUser.id ? 'selected' : '' %>><%=
+                      member.email %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Assign by</label>
+              <div class="assign-card" id="assignByCard">
+                <div class="avatar-circle">
+                  <%= taskUser && taskUser.email ? taskUser.email[0].toUpperCase() : 'U' %>
+                </div>
+                <div>
+                  <div class="assign-card-title">
+                    <%= taskUser && taskUser.email ? taskUser.email : 'Current User' %> (Me) 📞
+                  </div>
+                  <div class="assign-card-subtitle">✉ <%= taskUser && taskUser.email ? taskUser.email : '—' %>
+                  </div>
+                </div>
+                <button class="remove-assign-btn" type="button"
+                  onclick="clearAssign('createAssignedBy', 'assignByCard')">×</button>
+              </div>
+              <select id="createAssignedBy" name="assigned_by" class="form-input task-select-spacing">
+                <option value="">Unassigned</option>
+                <% teamMembers.forEach((member)=> { %>
+                  <option value="<%= member.id %>" <%=taskUser && member.id===taskUser.id ? 'selected' : '' %>><%=
+                      member.email %>
+                  </option>
+                  <% }) %>
+              </select>
+            </div>
+          </div>
+
+          <div class="create-panel-footer">
+            <button type="button" onclick="submitCreateTask()" class="btn-primary task-footer-btn">Create Task</button>
+            <button type="button" onclick="closeCreatePanel()" class="btn-secondary task-footer-btn">Cancel</button>
+          </div>
+        </form>
+      </aside>
+
+      <script id="task-statuses-json"
+        type="application/json"><%- JSON.stringify(taskStatuses).replace(/</g, '\\u003c') %></script>
+      <script id="team-members-json" type="application/json"><%- teamMembersJson %></script>
+      <script id="initial-tasks-json" type="application/json"><%- initialTasksJson %></script>
+
+      <script>
+        const TASK_STATUSES = JSON.parse(document.getElementById('task-statuses-json').textContent || '[]');
+        const TEAM_MEMBERS = JSON.parse(document.getElementById('team-members-json').textContent || '[]');
+        let latestTasks = JSON.parse(document.getElementById('initial-tasks-json').textContent || '[]');
+        let activeTab = 'all';
+        let searchTimeout;
+
+        function switchView(view) {
+          document.getElementById('kanbanView').style.display = view === 'kanban' ? 'grid' : 'none';
+          document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
+          document.getElementById('kanbanViewBtn').classList.toggle('active', view === 'kanban');
+          document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
+          document.getElementById('kanbanViewBtn').setAttribute('aria-pressed', view === 'kanban' ? 'true' : 'false');
+          document.getElementById('listViewBtn').setAttribute('aria-pressed', view === 'list' ? 'true' : 'false');
+          localStorage.setItem('taskView', view);
+        }
+
+        (function restoreTaskView() {
+          const saved = localStorage.getItem('taskView') || 'kanban';
+          switchView(saved);
+        })();
+
+        function escapeHtml(value) {
+          return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        }
+
+        function getPriorityColor(priority) {
+          if (priority === 'High') return '#EF4444';
+          if (priority === 'Medium') return '#F59E0B';
+          return '#10B981';
+        }
+
+        function getDueLabel(task) {
+          const dateLabel = task.due_date_label && task.due_date_label !== '—' ? task.due_date_label : 'No due date';
+          const timeLabel = task.due_time_label && task.due_time_label !== '—' ? ` ${task.due_time_label}` : '';
+          return `${dateLabel}${timeLabel}`;
+        }
+
+        function collectFilters(overrides = {}) {
+          const filters = {
+            search: document.getElementById('searchInput') ? document.getElementById('searchInput').value.trim() : '',
+            priority: document.querySelector('input[name="priority"]:checked')?.value || '',
+            status: document.querySelector('input[name="status"]:checked')?.value || '',
+            type: document.querySelector('input[name="type"]:checked')?.value || '',
+            assigned_to: Array.from(document.querySelectorAll('.user-filter:checked')).map((input) => input.value).join(','),
+            date_from: document.getElementById('dateFrom') ? document.getElementById('dateFrom').value : '',
+            date_to: document.getElementById('dateTo') ? document.getElementById('dateTo').value : '',
+            tag: document.querySelector('.tag-search') ? document.querySelector('.tag-search').value.trim() : '',
+            tab: activeTab
+          };
+
+          const merged = { ...filters, ...overrides };
+          Object.keys(merged).forEach((key) => {
+            if (merged[key] === '' || merged[key] == null || merged[key] === 'all') {
+              if (key !== 'tab' || merged[key] === 'all') {
+                delete merged[key];
+              }
+            }
+          });
+
+          if (activeTab === 'all' && !overrides.tab) {
+            delete merged.tab;
+          }
+
+          return merged;
+        }
+
+        document.querySelectorAll('.task-tab').forEach((btn) => {
+          btn.addEventListener('click', function () {
+            document.querySelectorAll('.task-tab').forEach((tabButton) => tabButton.classList.remove('active'));
+            this.classList.add('active');
+            activeTab = this.dataset.tab;
+            loadTasks();
+          });
+        });
+
+        document.querySelectorAll('.filter-dropdown').forEach((dropdown) => {
+          const trigger = dropdown.querySelector('.filter-btn');
+          if (!trigger) return;
+
+          trigger.addEventListener('click', function (event) {
+            event.stopPropagation();
+            const isOpen = dropdown.classList.contains('open');
+            document.querySelectorAll('.filter-dropdown.open').forEach((openDropdown) => openDropdown.classList.remove('open'));
+            if (!isOpen) dropdown.classList.add('open');
+          });
+        });
+
+        // Prevent clicks inside the filter menus and card dropdowns from closing them
+        document.querySelectorAll('.filter-menu, .card-dropdown').forEach((menu) => {
+          menu.addEventListener('click', function (e) {
+            e.stopPropagation();
+          });
+        });
+
+        document.addEventListener('click', function () {
+          document.querySelectorAll('.filter-dropdown.open').forEach((dropdown) => dropdown.classList.remove('open'));
+          document.querySelectorAll('.card-dropdown.open').forEach((menu) => menu.classList.remove('open'));
+        });
+
+        document.querySelectorAll('.user-filter, input[name="type"], input[name="status"], input[name="priority"]').forEach((input) => {
+          input.addEventListener('change', function () {
+            // Refresh the button label for the dropdown this input belongs to
+            const dropdown = this.closest('.filter-dropdown');
+            if (dropdown) refreshFilterButton(dropdown);
+            loadTasks();
+          });
+        });
+
+        if (document.querySelector('.tag-search')) {
+          document.querySelector('.tag-search').addEventListener('input', function () {
+            loadTasks();
+          });
+        }
+
+        // Keep original button labels so we can restore defaults
+        document.querySelectorAll('.filter-btn').forEach((btn) => {
+          if (!btn.dataset.default) btn.dataset.default = btn.textContent.trim();
+        });
+
+        // Debug: confirm the task script loaded and TASK_STATUSES is available
+        try {
+          console.log('task page loaded', Array.isArray(TASK_STATUSES) ? TASK_STATUSES.length + ' statuses' : TASK_STATUSES);
+        } catch (e) {
+          console.error('task page init error', e);
+        }
+
+        // Initialize filter button labels based on current selections
+        document.querySelectorAll('.filter-dropdown').forEach((dropdown) => refreshFilterButton(dropdown));
+
+        function refreshFilterButton(dropdown) {
+          const btn = dropdown.querySelector('.filter-btn');
+          if (!btn) return;
+
+          const checkboxInputs = dropdown.querySelectorAll('input[type="checkbox"]');
+          const checked = dropdown.querySelectorAll('input[type="checkbox"]:checked, input[type="radio"]:checked');
+
+          if (checkboxInputs.length > 0) {
+            // For multi-select (Users) show count
+            if (!checked.length) {
+              btn.textContent = btn.dataset.default + ' ▾';
+            } else {
+              btn.textContent = checked.length + ' selected ▾';
+            }
+            return;
+          }
+
+          if (!checked.length) {
+            btn.textContent = btn.dataset.default + ' ▾';
+            return;
+          }
+
+          // Use the label text of the checked input (radio)
+          const first = checked[0];
+          const label = first.closest('label');
+          if (label) {
+            const text = label.textContent.trim().replace(/\s+/g, ' ');
+            btn.textContent = text + ' ▾';
+          } else {
+            btn.textContent = (first.value || btn.dataset.default) + ' ▾';
+          }
+        }
+
+        function toggleCardMenu(event, id) {
+          event.stopPropagation();
+          const menu = document.getElementById('menu-' + id);
+          if (!menu) return;
+          const isOpen = menu.classList.contains('open');
+          document.querySelectorAll('.card-dropdown.open').forEach((cardMenu) => cardMenu.classList.remove('open'));
+          if (!isOpen) menu.classList.add('open');
+        }
+
+        // Event delegation for dynamically rendered cards and controls
+        document.addEventListener('click', function (e) {
+          // Card click -> navigate detail
+          const card = e.target.closest('.task-card, .task-row');
+          if (card && !e.target.closest('.task-card-menu') && !e.target.closest('.task-row-actions')) {
+            const taskId = card.dataset.taskId;
+            if (taskId) goToDetail(taskId);
+            return;
+          }
+
+          // Dots button -> open card menu
+          const dots = e.target.closest('.dots-btn');
+          if (dots) {
+            const id = dots.dataset.taskId;
+            if (id) toggleCardMenu(e, id);
+            return;
+          }
+
+          // Status button inside dropdown
+          const statusBtn = e.target.closest('.card-dropdown .status-btn');
+          if (statusBtn) {
+            const id = statusBtn.dataset.taskId;
+            const status = statusBtn.dataset.status;
+            if (id && status) changeStatus(id, status);
+            return;
+          }
+
+          // Add task button
+          const addBtn = e.target.closest('.add-task-btn');
+          if (addBtn) {
+            const status = addBtn.dataset.addStatus;
+            openCreatePanel(status);
+            return;
+          }
+        });
+
+        async function changeStatus(taskId, newStatus) {
+          try {
+            const response = await fetch('/task/' + taskId + '/status', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status: newStatus })
+            });
+
+            if (!response.ok) {
+              throw new Error('Unable to update task status.');
+            }
+
+            location.reload();
+          } catch (error) {
+            window.alert(error.message);
+          }
+        }
+
+        function goToDetail(id) {
+          window.location.href = '/task/' + id;
+        }
+
+        function debounceSearch(value) {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => loadTasks({ search: value }), 400);
+        }
+
+        function searchTasks() {
+          const bar = document.getElementById('searchBar');
+          bar.style.display = bar.style.display === 'none' ? 'block' : 'none';
+          if (bar.style.display === 'block') {
+            document.getElementById('searchInput').focus();
+          }
+        }
+
+        function applyDateFilter() {
+          loadTasks();
+        }
+
+        async function loadTasks(params = {}) {
+          const query = new URLSearchParams(collectFilters(params)).toString();
+          const response = await fetch('/task/data' + (query ? '?' + query : ''));
+          const taskList = await response.json();
+          latestTasks = taskList;
+          rebuildKanban(taskList);
+          rebuildList(taskList);
+        }
+
+        function buildStatusMenu(taskId) {
+          return TASK_STATUSES.map((statusName) => (
+            `<button class="card-dropdown-item status-btn" type="button" onclick="changeStatus(${taskId}, '${escapeHtml(statusName)}')">${escapeHtml(statusName)}</button>`
+          )).join('');
+        }
+
+        function buildCardHTML(task) {
+          const assignedEmail = task.assigned_to_email || 'Unassigned';
+          const avatar = assignedEmail && assignedEmail !== 'Unassigned' ? assignedEmail.charAt(0).toUpperCase() : '?';
+
+          return `
+        <div class="task-card" onclick="goToDetail(${task.id})">
+          <div class="task-card-header">
+            <span class="task-card-title">${escapeHtml(task.title)}</span>
+            <div class="task-card-menu">
+              <button class="dots-btn" type="button" onclick="toggleCardMenu(event, ${task.id})">⋮</button>
+              <div class="card-dropdown" id="menu-${task.id}">
+                <div class="card-dropdown-section">
+                  <div class="dropdown-section-label">ACTION</div>
+                  <a href="/task/${task.id}" class="card-dropdown-item">Edit task</a>
+                </div>
+                <div class="card-dropdown-section">
+                  <div class="dropdown-section-label">STATUS</div>
+                  ${buildStatusMenu(task.id)}
+                </div>
+              </div>
+            </div>
+            <span class="task-card-cal">📅</span>
+          </div>
+          <div class="task-card-meta">
+            <span class="task-date">📅 ${escapeHtml(getDueLabel(task))}</span>
+            <span class="task-priority">Priority <span class="priority-dot" style="background:${getPriorityColor(task.priority)}"></span></span>
+          </div>
+          <div class="task-card-footer">
+            <div class="task-avatar" title="${escapeHtml(assignedEmail)}">${escapeHtml(avatar)}</div>
+          </div>
+        </div>
+      `;
+        }
+
+        function rebuildKanban(taskList) {
+          TASK_STATUSES.forEach((statusName) => {
+            const container = document.querySelector('[data-status="' + statusName + '"] .cards-area');
+            const count = document.querySelector('[data-status="' + statusName + '"] .col-count');
+            if (!container || !count) return;
+
+            const filtered = taskList.filter((task) => task.status === statusName);
+            container.innerHTML = filtered.length
+              ? filtered.map((task) => buildCardHTML(task)).join('')
+              : '<div class="empty-col">No tasks</div>';
+            count.textContent = '📋 ' + filtered.length;
+          });
+        }
+
+        function rebuildList(taskList) {
+          const tbody = document.getElementById('taskTableBody');
+          if (!tbody) return;
+
+          if (!taskList.length) {
+            tbody.innerHTML = '<tr class="task-table-empty-row"><td colspan="8">No tasks match the current filters.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = taskList.map((task) => `
+        <tr onclick="goToDetail(${task.id})" style="cursor:pointer">
+          <td data-label="Select" onclick="event.stopPropagation()"><input type="checkbox" class="task-checkbox" value="${task.id}"></td>
+          <td data-label="Title">${escapeHtml(task.title)}</td>
+          <td data-label="Priority"><span class="priority-badge priority-${String(task.priority || 'medium').toLowerCase()}">${escapeHtml(task.priority || 'Medium')}</span></td>
+          <td data-label="Status"><span class="status-badge">${escapeHtml(task.status || '')}</span></td>
+          <td data-label="Type">${escapeHtml(task.type || '')}</td>
+          <td data-label="Due Date">${escapeHtml(task.due_date_label && task.due_date_label !== '—' ? task.due_date_label : '—')}</td>
+          <td data-label="Assigned To">${escapeHtml(task.assigned_to_email || '—')}</td>
+          <td data-label="Actions" onclick="event.stopPropagation()">
+            <div class="task-row-actions">
+              <a href="/task/${task.id}" class="action-link">View</a>
+              <button type="button" class="action-link danger" onclick="deleteSingleTask(${task.id})">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+        }
+
+        function openCreatePanel(status) {
+          if (status) {
+            document.getElementById('createStatus').value = status;
+          }
+          document.getElementById('createTaskPanel').classList.add('open');
+          document.getElementById('createTaskPanel').setAttribute('aria-hidden', 'false');
+          document.getElementById('panelOverlay').style.display = 'block';
+        }
+
+        function closeCreatePanel() {
+          document.getElementById('createTaskPanel').classList.remove('open');
+          document.getElementById('createTaskPanel').setAttribute('aria-hidden', 'true');
+          document.getElementById('panelOverlay').style.display = 'none';
+        }
+
+        function submitCreateTask() {
+          const form = document.getElementById('createTaskForm');
+          document.getElementById('descriptionHidden').value = document.getElementById('taskDescription').innerHTML;
+
+          // Prefer requestSubmit so the browser runs constraint validation
+          if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+            return;
+          }
+
+          // Fallback: run validation then submit
+          if (typeof form.reportValidity === 'function') {
+            if (form.reportValidity()) form.submit();
+            return;
+          }
+
+          form.submit();
+        }
+
+        // Ensure descriptionHidden is set on native submit as well
+        (function bindCreateFormSubmit() {
+          const form = document.getElementById('createTaskForm');
+          if (!form) return;
+          form.addEventListener('submit', function () {
+            const desc = document.getElementById('taskDescription');
+            if (desc) document.getElementById('descriptionHidden').value = desc.innerHTML;
+          });
+        })();
+
+        function clearField(id) {
+          const field = document.getElementById(id);
+          if (field) field.value = '';
+        }
+
+        function clearAssign(selectId, cardId) {
+          const select = document.getElementById(selectId);
+          if (select) select.value = '';
+          updateAssignCard(selectId, cardId);
+        }
+
+        function updateAssignCard(selectId, cardId) {
+          const select = document.getElementById(selectId);
+          const card = document.getElementById(cardId);
+          if (!select || !card) return;
+
+          const selected = TEAM_MEMBERS.find((member) => member.id === select.value);
+          const title = card.querySelector('.assign-card-title');
+          const subtitle = card.querySelector('.assign-card-subtitle');
+          const avatar = card.querySelector('.avatar-circle');
+
+          if (!selected) {
+            title.textContent = 'Unassigned';
+            subtitle.textContent = '✉ —';
+            avatar.textContent = '?';
+            return;
+          }
+
+          title.textContent = `${selected.email}${selected.id === '<%= taskUser ? taskUser.id : "" %>' ? ' (Me)' : ''} 📞`;
+          subtitle.textContent = `✉ ${selected.email}`;
+          avatar.textContent = selected.email.charAt(0).toUpperCase();
+        }
+
+        async function deleteSingleTask(taskId) {
+          if (!window.confirm('Delete this task?')) return;
+
+          const response = await fetch('/task/' + taskId + '/delete', {
+            method: 'POST',
+            headers: { Accept: 'application/json' }
+          });
+
+          if (response.ok) {
+            location.reload();
+            return;
+          }
+
+          window.alert('Unable to delete task.');
+        }
+
+        async function deleteSelectedTasks() {
+          const selectedIds = Array.from(document.querySelectorAll('.task-checkbox:checked')).map((input) => input.value);
+          if (!selectedIds.length) {
+            window.alert('Select at least one task first.');
+            return;
+          }
+
+          if (!window.confirm('Delete selected tasks?')) return;
+
+          for (const id of selectedIds) {
+            await fetch('/task/' + id + '/delete', {
+              method: 'POST',
+              headers: { Accept: 'application/json' }
+            });
+          }
+
+          location.reload();
+        }
+
+        function exportTasks() {
+          const rows = [
+            ['Title', 'Priority', 'Status', 'Type', 'Due Date', 'Assigned To'],
+            ...latestTasks.map((task) => [
+              task.title || '',
+              task.priority || '',
+              task.status || '',
+              task.type || '',
+              task.due_date_label && task.due_date_label !== '—' ? task.due_date_label : '',
+              task.assigned_to_email || ''
+            ])
+          ];
+
+          const csv = rows
+            .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+            .join('\n');
+
+          const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'tasks.csv';
+          link.click();
+          URL.revokeObjectURL(url);
+        }
+
+        function bindRichToolbar() {
+          document.querySelectorAll('.rich-toolbar button').forEach((button) => {
+            button.addEventListener('click', function () {
+              const command = this.dataset.command;
+              const promptLabel = this.dataset.prompt;
+              let value = null;
+
+              if (promptLabel) {
+                value = window.prompt(promptLabel, 'https://');
+                if (!value) return;
+              }
+
+              document.getElementById('taskDescription').focus();
+              document.execCommand(command, false, value);
+            });
+          });
+        }
+
+        document.getElementById('panelOverlay').addEventListener('click', closeCreatePanel);
+
+        const selectAll = document.getElementById('selectAll');
+        if (selectAll) {
+          selectAll.addEventListener('change', function () {
+            document.querySelectorAll('.task-checkbox').forEach((checkbox) => {
+              checkbox.checked = this.checked;
+            });
+          });
+        }
+
+        const assignToSelect = document.getElementById('createAssignedTo');
+        const assignBySelect = document.getElementById('createAssignedBy');
+        if (assignToSelect) {
+          assignToSelect.addEventListener('change', function () {
+            updateAssignCard('createAssignedTo', 'assignToCard');
+          });
+          updateAssignCard('createAssignedTo', 'assignToCard');
+        }
+        if (assignBySelect) {
+          assignBySelect.addEventListener('change', function () {
+            updateAssignCard('createAssignedBy', 'assignByCard');
+          });
+          updateAssignCard('createAssignedBy', 'assignByCard');
+        }
+
+        bindRichToolbar();
+      </script>
+  </body>
+
+</html>

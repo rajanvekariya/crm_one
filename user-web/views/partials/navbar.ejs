@@ -24,11 +24,6 @@
           <span>Contacts</span>
           <span class="nav-arrow" aria-hidden="true">▾</span>
         </a>
-        <a href="#" class="nav-link">
-          <span class="nav-icon" aria-hidden="true">📣</span>
-          <span>Marketing</span>
-          <span class="nav-arrow" aria-hidden="true">▾</span>
-        </a>
 
         <div class="nav-dropdown" id="salesDropdown">
           <button class="nav-link dropdown-trigger <%= currentPageValue === 'followup' ? 'active-parent' : '' %>"
@@ -57,13 +52,13 @@
               </svg>
               Follow-Up
             </a>
+            <a href="/task" class="dropdown-item <%= currentPageValue === 'task' ? 'active' : '' %>">
+              <span class="nav-icon" aria-hidden="true">☑</span>
+              Tasks
+            </a>
           </div>
         </div>
 
-        <a href="#" class="nav-link">
-          <span class="nav-icon" aria-hidden="true">⚙️</span>
-          <span>Workflows</span>
-        </a>
         <a href="#" class="nav-link">
           <span class="nav-icon" aria-hidden="true">📋</span>
           <span>Reports</span>
@@ -151,7 +146,7 @@
 
     (function () {
       const page = '<%= currentPageValue %>';
-      const salesPages = ['followup'];
+      const salesPages = ['followup', 'task'];
       if (salesPages.includes(page)) {
         const trigger = document.getElementById('salesTrigger');
         if (trigger) trigger.classList.add('active-parent');

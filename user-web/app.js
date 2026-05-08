@@ -9,6 +9,7 @@ const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
 const teamRoutes = require("./routes/team");
 const followupRouter = require("./routes/followup");
+const taskRouter = require("./routes/task");
 const {
   attachCurrentUser,
   isAuthenticated: requireAuth,
@@ -68,6 +69,7 @@ app.use(dashboardRoutes);
 app.use(teamRoutes);
 require("./utils/notificationScheduler");
 app.use("/followup", requireAuth, requireActive, followupRouter);
+app.use("/task", requireAuth, requireActive, taskRouter);
 
 const { initDatabase } = require("./db");
 

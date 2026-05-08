@@ -426,6 +426,39 @@
                 .dash-timeline__btn:hover {
                   background: #FF7A4D;
                 }
+                @media (max-width: 992px) {
+                  .dashboard-wrapper {
+                    flex-direction: column;
+                  }
+                  .right-panel {
+                    width: 100%;
+                    flex: none;
+                    border-left: none;
+                    border-top: 1px solid #E2E8F0;
+                  }
+                }
+                @media (max-width: 768px) {
+                  .dash-timeline__header {
+                    padding-left: 20px;
+                  }
+                  .dash-timeline__left {
+                    width: 80px;
+                    padding-right: 15px;
+                  }
+                  .dash-timeline__left::after {
+                    right: 4px;
+                  }
+                  .dash-timeline__card {
+                    padding: 16px;
+                    gap: 15px;
+                    flex-direction: column;
+                    align-items: flex-start;
+                  }
+                  .dash-timeline__footer {
+                    width: 100%;
+                    justify-content: space-between;
+                  }
+                }
               </style>
               <script>
                 document.querySelectorAll('[data-dash-tab]').forEach(btn => {

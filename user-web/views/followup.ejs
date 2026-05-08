@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,6 +13,7 @@
     .dash-timeline {
       padding: 10px 0;
     }
+
     .dash-timeline__header {
       display: flex;
       align-items: center;
@@ -22,16 +24,19 @@
       margin-bottom: 20px;
       padding-left: 90px;
     }
+
     .dash-timeline__header svg {
       width: 18px;
       height: 18px;
     }
+
     .dash-timeline__item {
       display: flex;
       gap: 0;
       margin-bottom: 15px;
       position: relative;
     }
+
     .dash-timeline__left {
       width: 110px;
       flex-shrink: 0;
@@ -41,6 +46,7 @@
       padding-right: 20px;
       position: relative;
     }
+
     .dash-timeline__left::after {
       content: '';
       position: absolute;
@@ -51,13 +57,16 @@
       background: #E0E6ED;
       z-index: 1;
     }
+
     .dash-timeline__item:last-child .dash-timeline__left::after {
       bottom: 50%;
     }
+
     .dash-timeline__time {
       font-size: 12px;
       color: #8C97A8;
     }
+
     .crm-followup-closure-note {
       margin-top: 12px;
       padding: 10px 15px;
@@ -66,6 +75,7 @@
       border-radius: 4px;
       font-size: 12px;
     }
+
     .crm-followup-assignment-toggle {
       display: flex;
       background: #F1F5F9;
@@ -74,13 +84,16 @@
       gap: 4px;
       margin-bottom: 15px;
     }
+
     .crm-followup-assignment-toggle label {
       flex: 1;
       cursor: pointer;
     }
+
     .crm-followup-assignment-toggle input {
       display: none;
     }
+
     .crm-followup-assignment-toggle span {
       display: block;
       text-align: center;
@@ -91,11 +104,13 @@
       border-radius: 6px;
       transition: all 0.2s;
     }
-    .crm-followup-assignment-toggle input:checked + span {
+
+    .crm-followup-assignment-toggle input:checked+span {
       background: #FFFFFF;
       color: #29384C;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
+
     .crm-followup-read-only-display {
       background: #F8FAFC;
       border: 1px solid #E2E8F0;
@@ -105,6 +120,7 @@
       color: #29384C;
       font-weight: 500;
     }
+
     .dash-timeline__dot {
       width: 10px;
       height: 10px;
@@ -113,6 +129,7 @@
       z-index: 2;
       margin-left: 10px;
     }
+
     .dash-timeline__card {
       flex: 1;
       background: #FFFFFF;
@@ -125,22 +142,26 @@
       border: 1px solid transparent;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
+
     .dash-timeline__card:hover {
       border-color: #E2E8F0;
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
     }
+
     .dash-timeline__desc {
       flex: 1;
       font-size: 13px;
       color: #29384C;
       line-height: 1.6;
     }
+
     .dash-timeline__meta {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 10px;
     }
+
     .dash-timeline__footer {
       display: flex;
       align-items: center;
@@ -148,6 +169,7 @@
       flex-shrink: 0;
       align-self: center;
     }
+
     .dash-timeline__assignee {
       display: flex;
       align-items: center;
@@ -156,6 +178,7 @@
       color: #29384C;
       font-weight: 500;
     }
+
     .dash-timeline__avatar {
       width: 34px;
       height: 34px;
@@ -168,6 +191,7 @@
       font-size: 11px;
       font-weight: 600;
     }
+
     .dash-timeline__btn {
       background: #FF8C66;
       color: #FFFFFF;
@@ -180,19 +204,23 @@
       border: none;
       cursor: pointer;
     }
+
     .dash-timeline__btn:hover {
       background: #FF7A4D;
       transform: translateY(-1px);
     }
+
     .dash-timeline__btn:active {
       transform: translateY(0);
     }
+
     .crm-followup-gallery {
       margin-top: 15px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
+
     .crm-followup-gallery__item img {
       width: 60px;
       height: 60px;
@@ -202,896 +230,983 @@
     }
   </style>
 </head>
-<%
-  const followupUser = (typeof currentUser !== 'undefined' && currentUser)
-    || (typeof user !== 'undefined' && user)
-    || null;
-  const followupPage = typeof currentPage !== 'undefined' ? currentPage : 'followup';
-%>
-<body class="crmone-layout dashboard-page">
-  <%- include('partials/navbar', { user: followupUser, currentPage: followupPage }) %>
+<% const followupUser=(typeof currentUser !=='undefined' && currentUser) || (typeof user !=='undefined' && user) ||
+  null; const followupPage=typeof currentPage !=='undefined' ? currentPage : 'followup' ; %>
 
-  <div class="dashboard-wrapper">
-    <main class="main-content">
-      <div class="page-title-bar">
-        <div class="page-title">
-          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"></circle>
-            <path d="M10 5.5v4.8l3.4 1.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-          <span>Followup</span>
-        </div>
+  <body class="crmone-layout dashboard-page">
+    <%- include('partials/navbar', { user: followupUser, currentPage: followupPage }) %>
+
+      <div class="dashboard-wrapper">
+        <main class="main-content">
+          <div class="page-title-bar">
+            <div class="page-title">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.6"></circle>
+                <path d="M10 5.5v4.8l3.4 1.9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+              </svg>
+              <span>Followup</span>
+            </div>
+          </div>
+
+          <div class="content-inner crm-followup-page">
+            <% if (successMessages && successMessages.length) { %>
+              <div class="followup-alert followup-alert--success">
+                <%= successMessages[0] %>
+              </div>
+              <% } %>
+                <% if (errorMessages && errorMessages.length) { %>
+                  <div class="followup-alert followup-alert--error">
+                    <%= errorMessages[0] %>
+                  </div>
+                  <% } %>
+
+                    <section class="crm-followup-shell">
+                      <section class="crm-followup-board">
+                        <div class="crm-followup-toolbar">
+                          <div class="crm-followup-tabs" role="tablist" aria-label="Followup tabs">
+                            <button class="crm-followup-tab is-active" type="button"
+                              data-followup-tab="upcoming">Upcoming</button>
+                            <button class="crm-followup-tab" type="button" data-followup-tab="past">Past</button>
+                          </div>
+
+                          <div class="crm-followup-toolbar__actions">
+                            <button class="crm-followup-icon-btn" type="button" aria-label="Refresh followups"
+                              onclick="window.location.reload()">
+                              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                <path d="M15.8 7.4A6 6 0 1 0 16 10" stroke="currentColor" stroke-width="1.6"
+                                  stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M12.8 4.8h3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                                  stroke-linejoin="round"></path>
+                              </svg>
+                            </button>
+                            <button class="crm-followup-icon-btn crm-followup-icon-btn--warm" type="button"
+                              aria-label="Open update panel" data-open-first-followup>
+                              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                <path d="M4.5 5.5h11M4.5 10h8M4.5 14.5h5" stroke="currentColor" stroke-width="1.6"
+                                  stroke-linecap="round"></path>
+                                <path d="m12.8 12.4 2.8 2.8-4.2 1.4 1.4-4.2Z" stroke="currentColor" stroke-width="1.3"
+                                  stroke-linejoin="round"></path>
+                              </svg>
+                            </button>
+                            <button class="crm-followup-icon-btn crm-followup-icon-btn--blue" type="button"
+                              aria-label="Open add followup panel" data-open-create-panel>
+                              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                <path d="M10 4.5v11M4.5 10h11" stroke="currentColor" stroke-width="1.8"
+                                  stroke-linecap="round"></path>
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="crm-followup-pane is-active" data-followup-pane="upcoming">
+                          <% if (!upcoming.length) { %>
+                            <div class="crm-followup-empty-state">
+                              <p>No upcoming followups yet.</p>
+                            </div>
+                            <% } else { %>
+                              <div class="dash-timeline">
+                                <div class="dash-timeline__header">
+                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                  </svg>
+                                  <span>Upcoming Tasks</span>
+                                </div>
+                                <% upcoming.forEach((item, index)=> { %>
+                                  <div class="dash-timeline__item">
+                                    <div class="dash-timeline__left">
+                                      <span class="dash-timeline__time">
+                                        <%= item.followup_time_label %>
+                                      </span>
+                                      <div class="dash-timeline__dot"></div>
+                                    </div>
+                                    <div class="dash-timeline__card">
+                                      <div class="dash-timeline__desc">
+                                        <div class="dash-timeline__meta">
+                                          <span class="crm-followup-entry__day">
+                                            <%= item.followup_day_label %>
+                                          </span>
+                                          <span class="crm-followup-status <%= item.status_class %>">
+                                            <%= item.status_label %>
+                                          </span>
+                                        </div>
+                                        <%= item.description %>
+                                          <% if (item.whatsapp_images.length) { %>
+                                            <div class="crm-followup-gallery">
+                                              <% item.whatsapp_images.forEach((imageUrl, imageIndex)=> { %>
+                                                <a href="<%= imageUrl %>" class="crm-followup-gallery__item"
+                                                  target="_blank" rel="noreferrer" onclick="event.stopPropagation()">
+                                                  <img src="<%= imageUrl %>" alt="WhatsApp image <%= imageIndex + 1 %>">
+                                                </a>
+                                                <% }) %>
+                                            </div>
+                                            <% } %>
+                                      </div>
+                                      <div class="dash-timeline__footer">
+                                        <div class="dash-timeline__assignee">
+                                          <span class="dash-timeline__avatar">
+                                            <%= item.assignee_initials %>
+                                          </span>
+                                          <span>
+                                            <%= item.assignee_name %>
+                                          </span>
+                                        </div>
+                                        <button type="button" class="dash-timeline__btn" data-followup-open
+                                          data-followup-id="<%= item.id %>">Follow</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <% }) %>
+                              </div>
+                              <% } %>
+                        </div>
+
+                        <div class="crm-followup-pane" data-followup-pane="past">
+                          <% if (!past.length) { %>
+                            <div class="crm-followup-empty-state">
+                              <p>No past followups yet.</p>
+                            </div>
+                            <% } else { %>
+                              <div class="dash-timeline">
+                                <div class="dash-timeline__header">
+                                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                  </svg>
+                                  <span>Past Activity</span>
+                                </div>
+                                <% past.forEach((item, index)=> { %>
+                                  <div class="dash-timeline__item">
+                                    <div class="dash-timeline__left">
+                                      <span class="dash-timeline__time">
+                                        <%= item.followup_time_label %>
+                                      </span>
+                                      <div class="dash-timeline__dot"></div>
+                                    </div>
+                                    <div class="dash-timeline__card">
+                                      <div class="dash-timeline__desc">
+                                        <div class="dash-timeline__meta">
+                                          <span class="crm-followup-entry__day">
+                                            <%= item.followup_day_label %>
+                                          </span>
+                                          <span class="crm-followup-status <%= item.status_class %>">
+                                            <%= item.status_label %>
+                                          </span>
+                                        </div>
+                                        <%= item.description %>
+                                          <% if (item.closure_reason || item.closure_notes) { %>
+                                            <div class="crm-followup-closure-note">
+                                              <% if (item.closure_reason) { %>
+                                                <strong>
+                                                  <%= item.closure_reason %>
+                                                </strong>
+                                                <% } %>
+                                                  <% if (item.closure_notes) { %>
+                                                    <span>
+                                                      <%= item.closure_notes %>
+                                                    </span>
+                                                    <% } %>
+                                            </div>
+                                            <% } %>
+                                              <% if (item.whatsapp_images.length) { %>
+                                                <div class="crm-followup-gallery">
+                                                  <% item.whatsapp_images.forEach((imageUrl, imageIndex)=> { %>
+                                                    <a href="<%= imageUrl %>" class="crm-followup-gallery__item"
+                                                      target="_blank" rel="noreferrer"
+                                                      onclick="event.stopPropagation()">
+                                                      <img src="<%= imageUrl %>"
+                                                        alt="WhatsApp image <%= imageIndex + 1 %>">
+                                                    </a>
+                                                    <% }) %>
+                                                </div>
+                                                <% } %>
+                                      </div>
+                                      <div class="dash-timeline__footer">
+                                        <div class="dash-timeline__assignee">
+                                          <span class="dash-timeline__avatar">
+                                            <%= item.assignee_initials %>
+                                          </span>
+                                          <span>
+                                            <%= item.assignee_name %>
+                                          </span>
+                                        </div>
+                                        <button type="button" class="dash-timeline__btn" data-followup-open
+                                          data-followup-id="<%= item.id %>">Update</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <% }) %>
+                              </div>
+                              <% } %>
+                        </div>
+                      </section>
+
+                      <aside class="crm-followup-sidepanel" data-create-panel>
+                        <div class="crm-followup-panel__header">
+                          <h2>Add Followup</h2>
+                          <button type="button" class="crm-followup-close-btn" data-reset-create-panel
+                            aria-label="Reset create form">×</button>
+                        </div>
+
+                        <form action="/followup/create" method="POST" class="crm-followup-form">
+                          <input type="hidden" name="status" value="schedule_next_followup">
+
+                          <p class="crm-followup-association" data-image-count-label>You have associated 0 image(s)</p>
+
+                          <label class="crm-followup-field">
+                            <span>Description*</span>
+                            <textarea name="description" rows="5" placeholder="Type the followup details here..."
+                              required></textarea>
+                          </label>
+
+                          <label class="crm-followup-field">
+                            <span>WhatsApp image URLs</span>
+                            <textarea id="create-whatsapp-images" name="whatsapp_images" rows="4"
+                              placeholder="Paste one image URL per line" data-image-input
+                              data-preview-target="create-image-preview"
+                              data-count-target="create-image-count"></textarea>
+                          </label>
+
+                          <div class="crm-followup-field">
+                            <div class="crm-followup-attachments-header">
+                              <span>Add Images</span>
+                              <button type="button" class="crm-followup-add-file-btn"
+                                data-trigger-file-input="create-file-input" title="Upload images">
+                                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                  <path d="M10 4.5v11M4.5 10h11" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round"></path>
+                                </svg>
+                              </button>
+                            </div>
+                            <input type="file" id="create-file-input" multiple accept="image/*" hidden data-file-input
+                              data-target-textarea="create-whatsapp-images">
+                          </div>
+
+                          <div class="crm-followup-image-preview" id="create-image-preview"></div>
+                          <input type="hidden" id="create-image-count" value="0">
+
+                          <div class="crm-followup-grid">
+                            <label class="crm-followup-field">
+                              <span>Next followup date</span>
+                              <input type="date" name="followup_date" required>
+                            </label>
+                            <label class="crm-followup-field">
+                              <span>Next followup time</span>
+                              <input type="time" name="followup_time" required>
+                            </label>
+                          </div>
+
+                          <div class="crm-followup-field">
+                            <span>Assignment Type</span>
+                            <div class="crm-followup-assignment-toggle">
+                              <label>
+                                <input type="radio" name="create_assignment_type" value="user" checked
+                                  data-assignment-toggle data-target-select="create-assigned-select"
+                                  data-panel="create">
+                                <span>User</span>
+                              </label>
+                              <label>
+                                <input type="radio" name="create_assignment_type" value="team" data-assignment-toggle
+                                  data-target-select="create-assigned-select" data-panel="create">
+                                <span>Team</span>
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="crm-followup-field" id="create-user-display-container">
+                            <span>Assigned to</span>
+                            <div class="crm-followup-read-only-display">
+                              <%= currentUser.display_name %> (You)
+                            </div>
+                          </div>
+
+                          <label class="crm-followup-field" id="create-team-select-container" style="display: none;">
+                            <span>Assign to Team Member*</span>
+                            <select id="create-assigned-select" data-assignee-select
+                              data-card-target="create-assignee-card">
+                              <option value="" disabled selected>Select a team member</option>
+                              <% teamMembers.forEach((member)=> { %>
+                                <option value="<%= member.id %>" data-name="<%= member.display_name %>"
+                                  data-email="<%= member.email %>" data-initials="<%= member.initials %>">
+                                  <%= member.display_name %> (<%= member.email %>)
+                                </option>
+                                <% }) %>
+                            </select>
+                          </label>
+
+                          <input type="hidden" name="assigned_to" id="create-assigned-to-user"
+                            value="<%= currentUser.id %>">
+
+                          <div class="crm-followup-assignee-card" id="create-assignee-card">
+                            <span class="crm-followup-avatar is-empty">NA</span>
+                            <div>
+                              <strong>Unassigned</strong>
+                              <span>No team member selected</span>
+                            </div>
+                          </div>
+
+                          <div class="crm-followup-form__actions">
+                            <button type="submit" class="crm-followup-primary-btn">Create</button>
+                            <button type="reset" class="crm-followup-secondary-btn"
+                              data-reset-create-panel>Cancel</button>
+                          </div>
+                        </form>
+                      </aside>
+
+                      <section class="crm-followup-update-panel" data-update-panel hidden>
+                        <div class="crm-followup-panel__header">
+                          <h2>Update Followup</h2>
+                          <button type="button" class="crm-followup-close-btn" data-close-update-panel
+                            aria-label="Close update panel">×</button>
+                        </div>
+
+                        <form method="POST" class="crm-followup-form" data-update-form>
+                          <input type="hidden" name="existing_followup_at" data-update-existing-followup-at>
+                          <input type="hidden" name="description" data-update-description-input>
+                          <input type="hidden" name="followup_date" data-update-date-input>
+                          <input type="hidden" name="followup_time" data-update-time-input>
+                          <input type="hidden" name="assigned_to" data-update-assigned-input>
+                          <input type="hidden" name="whatsapp_images" data-update-images-input>
+                          <input type="hidden" name="closure_reason" data-update-closure-reason-input>
+                          <input type="hidden" name="closure_notes" data-update-closure-notes-input>
+
+                          <label class="crm-followup-field">
+                            <span>Status</span>
+                            <select name="status" data-update-status>
+                              <option value="schedule_next_followup">Schedule next followup</option>
+                              <option value="followup_not_needed">Followup not needed</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
+                          </label>
+
+                          <div data-status-panel="schedule_next_followup">
+                            <label class="crm-followup-field">
+                              <span>Description*</span>
+                              <textarea rows="5" data-update-description required></textarea>
+                            </label>
+
+                            <label class="crm-followup-field">
+                              <span>WhatsApp image URLs</span>
+                              <textarea id="update-whatsapp-images" rows="4" placeholder="Paste one image URL per line"
+                                data-image-input data-update-images data-preview-target="update-image-preview"
+                                data-count-target="update-image-count"></textarea>
+                            </label>
+
+                            <div class="crm-followup-field">
+                              <div class="crm-followup-attachments-header">
+                                <span>Add Images</span>
+                                <button type="button" class="crm-followup-add-file-btn"
+                                  data-trigger-file-input="update-file-input" title="Upload images">
+                                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                                    <path d="M10 4.5v11M4.5 10h11" stroke="currentColor" stroke-width="2"
+                                      stroke-linecap="round"></path>
+                                  </svg>
+                                </button>
+                              </div>
+                              <input type="file" id="update-file-input" multiple accept="image/*" hidden data-file-input
+                                data-target-textarea="update-whatsapp-images">
+                            </div>
+
+                            <p class="crm-followup-association" data-update-image-count>You have associated 0 image(s)
+                            </p>
+                            <div class="crm-followup-image-preview" id="update-image-preview"></div>
+                            <input type="hidden" id="update-image-count" value="0">
+
+                            <div class="crm-followup-grid">
+                              <label class="crm-followup-field">
+                                <span>Next followup date</span>
+                                <input type="date" data-update-date required>
+                              </label>
+                              <label class="crm-followup-field">
+                                <span>Next followup time</span>
+                                <input type="time" data-update-time required>
+                              </label>
+                            </div>
+
+                            <div class="crm-followup-field">
+                              <span>Assignment Type</span>
+                              <div class="crm-followup-assignment-toggle">
+                                <label>
+                                  <input type="radio" name="update_assignment_type" value="user" checked
+                                    data-assignment-toggle data-target-select="update-assigned-select"
+                                    data-panel="update">
+                                  <span>User</span>
+                                </label>
+                                <label>
+                                  <input type="radio" name="update_assignment_type" value="team" data-assignment-toggle
+                                    data-target-select="update-assigned-select" data-panel="update">
+                                  <span>Team</span>
+                                </label>
+                              </div>
+                            </div>
+
+                            <div class="crm-followup-field" id="update-user-display-container">
+                              <span>Assigned to</span>
+                              <div class="crm-followup-read-only-display">
+                                <%= currentUser.display_name %> (You)
+                              </div>
+                            </div>
+
+                            <label class="crm-followup-field" id="update-team-select-container" style="display: none;">
+                              <span>Assign to Team Member*</span>
+                              <select id="update-assigned-select" data-assignee-select data-update-assigned-to
+                                data-card-target="update-assignee-card">
+                                <option value="" disabled selected>Select a team member</option>
+                                <% teamMembers.forEach((member)=> { %>
+                                  <option value="<%= member.id %>" data-name="<%= member.display_name %>"
+                                    data-email="<%= member.email %>" data-initials="<%= member.initials %>">
+                                    <%= member.display_name %> (<%= member.email %>)
+                                  </option>
+                                  <% }) %>
+                              </select>
+                            </label>
+
+                            <input type="hidden" id="update-assigned-to-user" value="<%= currentUser.id %>">
+
+                            <div class="crm-followup-assignee-card" id="update-assignee-card">
+                              <span class="crm-followup-avatar is-empty">NA</span>
+                              <div>
+                                <strong>Unassigned</strong>
+                                <span>No team member selected</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div data-status-panel="followup_not_needed" hidden>
+                            <label class="crm-followup-field">
+                              <span>Followup End Response</span>
+                              <select data-update-closure-reason>
+                                <option value="">Select response</option>
+                                <option value="Conversation complete">Conversation complete</option>
+                                <option value="Issue resolved">Issue resolved</option>
+                                <option value="Not interested">Not interested</option>
+                                <option value="No response">No response</option>
+                              </select>
+                            </label>
+
+                            <label class="crm-followup-field">
+                              <span>Type here...</span>
+                              <textarea rows="4" data-update-closure-notes
+                                placeholder="Add the closing note or response details"></textarea>
+                            </label>
+
+                            <label class="crm-followup-field">
+                              <span>Description*</span>
+                              <textarea rows="4" data-update-description-closed required></textarea>
+                            </label>
+
+                            <div class="crm-followup-grid">
+                              <label class="crm-followup-field">
+                                <span>Original followup date</span>
+                                <input type="date" data-update-date-closed>
+                              </label>
+                              <label class="crm-followup-field">
+                                <span>Original followup time</span>
+                                <input type="time" data-update-time-closed>
+                              </label>
+                            </div>
+                          </div>
+
+                          <div data-status-panel="cancelled" hidden>
+                            <label class="crm-followup-field">
+                              <span>Cancellation note</span>
+                              <textarea rows="4" data-update-cancel-note
+                                placeholder="Add why this followup was cancelled"></textarea>
+                            </label>
+
+                            <label class="crm-followup-field">
+                              <span>Description*</span>
+                              <textarea rows="4" data-update-description-cancelled required></textarea>
+                            </label>
+                          </div>
+
+                          <div class="crm-followup-form__actions">
+                            <button type="submit" class="crm-followup-primary-btn">Update</button>
+                            <button type="button" class="crm-followup-secondary-btn"
+                              data-close-update-panel>Cancel</button>
+                          </div>
+                        </form>
+
+                        <form method="POST" class="crm-followup-delete-form" data-delete-form
+                          onsubmit="return confirm('Delete this followup?');">
+                          <button type="submit" class="crm-followup-delete-btn">Delete followup</button>
+                        </form>
+                      </section>
+                    </section>
+          </div>
+        </main>
       </div>
 
-      <div class="content-inner crm-followup-page">
-        <% if (successMessages && successMessages.length) { %>
-          <div class="followup-alert followup-alert--success"><%= successMessages[0] %></div>
-        <% } %>
-        <% if (errorMessages && errorMessages.length) { %>
-          <div class="followup-alert followup-alert--error"><%= errorMessages[0] %></div>
-        <% } %>
-
-        <section class="crm-followup-shell">
-          <section class="crm-followup-board">
-            <div class="crm-followup-toolbar">
-              <div class="crm-followup-tabs" role="tablist" aria-label="Followup tabs">
-                <button class="crm-followup-tab is-active" type="button" data-followup-tab="upcoming">Upcoming</button>
-                <button class="crm-followup-tab" type="button" data-followup-tab="past">Past</button>
-              </div>
-
-              <div class="crm-followup-toolbar__actions">
-                <button class="crm-followup-icon-btn" type="button" aria-label="Refresh followups" onclick="window.location.reload()">
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M15.8 7.4A6 6 0 1 0 16 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                    <path d="M12.8 4.8h3v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
-                  </svg>
-                </button>
-                <button class="crm-followup-icon-btn crm-followup-icon-btn--warm" type="button" aria-label="Open update panel" data-open-first-followup>
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M4.5 5.5h11M4.5 10h8M4.5 14.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
-                    <path d="m12.8 12.4 2.8 2.8-4.2 1.4 1.4-4.2Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"></path>
-                  </svg>
-                </button>
-                <button class="crm-followup-icon-btn crm-followup-icon-btn--blue" type="button" aria-label="Open add followup panel" data-open-create-panel>
-                  <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                    <path d="M10 4.5v11M4.5 10h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="crm-followup-pane is-active" data-followup-pane="upcoming">
-              <% if (!upcoming.length) { %>
-                <div class="crm-followup-empty-state">
-                  <p>No upcoming followups yet.</p>
-                </div>
-              <% } else { %>
-                <div class="dash-timeline">
-                  <div class="dash-timeline__header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    <span>Upcoming Tasks</span>
-                  </div>
-                  <% upcoming.forEach((item, index) => { %>
-                    <div class="dash-timeline__item">
-                      <div class="dash-timeline__left">
-                        <span class="dash-timeline__time"><%= item.followup_time_label %></span>
-                        <div class="dash-timeline__dot"></div>
-                      </div>
-                      <div class="dash-timeline__card">
-                        <div class="dash-timeline__desc">
-                          <div class="dash-timeline__meta">
-                            <span class="crm-followup-entry__day"><%= item.followup_day_label %></span>
-                            <span class="crm-followup-status <%= item.status_class %>"><%= item.status_label %></span>
-                          </div>
-                          <%= item.description %>
-                          <% if (item.whatsapp_images.length) { %>
-                            <div class="crm-followup-gallery">
-                              <% item.whatsapp_images.forEach((imageUrl, imageIndex) => { %>
-                                <a href="<%= imageUrl %>" class="crm-followup-gallery__item" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">
-                                  <img src="<%= imageUrl %>" alt="WhatsApp image <%= imageIndex + 1 %>">
-                                </a>
-                              <% }) %>
-                            </div>
-                          <% } %>
-                        </div>
-                        <div class="dash-timeline__footer">
-                          <div class="dash-timeline__assignee">
-                            <span class="dash-timeline__avatar"><%= item.assignee_initials %></span>
-                            <span><%= item.assignee_name %></span>
-                          </div>
-                          <button type="button" class="dash-timeline__btn" data-followup-open data-followup-id="<%= item.id %>">Follow</button>
-                        </div>
-                      </div>
-                    </div>
-                  <% }) %>
-                </div>
-              <% } %>
-            </div>
-
-            <div class="crm-followup-pane" data-followup-pane="past">
-              <% if (!past.length) { %>
-                <div class="crm-followup-empty-state">
-                  <p>No past followups yet.</p>
-                </div>
-              <% } else { %>
-                <div class="dash-timeline">
-                  <div class="dash-timeline__header">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    <span>Past Activity</span>
-                  </div>
-                  <% past.forEach((item, index) => { %>
-                    <div class="dash-timeline__item">
-                      <div class="dash-timeline__left">
-                        <span class="dash-timeline__time"><%= item.followup_time_label %></span>
-                        <div class="dash-timeline__dot"></div>
-                      </div>
-                      <div class="dash-timeline__card">
-                        <div class="dash-timeline__desc">
-                          <div class="dash-timeline__meta">
-                            <span class="crm-followup-entry__day"><%= item.followup_day_label %></span>
-                            <span class="crm-followup-status <%= item.status_class %>"><%= item.status_label %></span>
-                          </div>
-                          <%= item.description %>
-                          <% if (item.closure_reason || item.closure_notes) { %>
-                            <div class="crm-followup-closure-note">
-                              <% if (item.closure_reason) { %>
-                                <strong><%= item.closure_reason %></strong>
-                              <% } %>
-                              <% if (item.closure_notes) { %>
-                                <span><%= item.closure_notes %></span>
-                              <% } %>
-                            </div>
-                          <% } %>
-                          <% if (item.whatsapp_images.length) { %>
-                            <div class="crm-followup-gallery">
-                              <% item.whatsapp_images.forEach((imageUrl, imageIndex) => { %>
-                                <a href="<%= imageUrl %>" class="crm-followup-gallery__item" target="_blank" rel="noreferrer" onclick="event.stopPropagation()">
-                                  <img src="<%= imageUrl %>" alt="WhatsApp image <%= imageIndex + 1 %>">
-                                </a>
-                              <% }) %>
-                            </div>
-                          <% } %>
-                        </div>
-                        <div class="dash-timeline__footer">
-                          <div class="dash-timeline__assignee">
-                            <span class="dash-timeline__avatar"><%= item.assignee_initials %></span>
-                            <span><%= item.assignee_name %></span>
-                          </div>
-                          <button type="button" class="dash-timeline__btn" data-followup-open data-followup-id="<%= item.id %>">Update</button>
-                        </div>
-                      </div>
-                    </div>
-                  <% }) %>
-                </div>
-              <% } %>
-            </div>
-          </section>
-
-          <aside class="crm-followup-sidepanel" data-create-panel>
-            <div class="crm-followup-panel__header">
-              <h2>Add Followup</h2>
-              <button type="button" class="crm-followup-close-btn" data-reset-create-panel aria-label="Reset create form">×</button>
-            </div>
-
-            <form action="/followup/create" method="POST" class="crm-followup-form">
-              <input type="hidden" name="status" value="schedule_next_followup">
-
-              <p class="crm-followup-association" data-image-count-label>You have associated 0 image(s)</p>
-
-              <label class="crm-followup-field">
-                <span>Description*</span>
-                <textarea name="description" rows="5" placeholder="Type the followup details here..." required></textarea>
-              </label>
-
-              <label class="crm-followup-field">
-                <span>WhatsApp image URLs</span>
-                <textarea id="create-whatsapp-images" name="whatsapp_images" rows="4" placeholder="Paste one image URL per line" data-image-input data-preview-target="create-image-preview" data-count-target="create-image-count"></textarea>
-              </label>
-
-              <div class="crm-followup-field">
-                <div class="crm-followup-attachments-header">
-                  <span>Add Images</span>
-                  <button type="button" class="crm-followup-add-file-btn" data-trigger-file-input="create-file-input" title="Upload images">
-                    <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                      <path d="M10 4.5v11M4.5 10h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                    </svg>
-                  </button>
-                </div>
-                <input type="file" id="create-file-input" multiple accept="image/*" hidden data-file-input data-target-textarea="create-whatsapp-images">
-              </div>
-
-              <div class="crm-followup-image-preview" id="create-image-preview"></div>
-              <input type="hidden" id="create-image-count" value="0">
-
-              <div class="crm-followup-grid">
-                <label class="crm-followup-field">
-                  <span>Next followup date</span>
-                  <input type="date" name="followup_date" required>
-                </label>
-                <label class="crm-followup-field">
-                  <span>Next followup time</span>
-                  <input type="time" name="followup_time" required>
-                </label>
-              </div>
-
-              <div class="crm-followup-field">
-                <span>Assignment Type</span>
-                <div class="crm-followup-assignment-toggle">
-                  <label>
-                    <input type="radio" name="create_assignment_type" value="user" checked data-assignment-toggle data-target-select="create-assigned-select" data-panel="create">
-                    <span>User</span>
-                  </label>
-                  <label>
-                    <input type="radio" name="create_assignment_type" value="team" data-assignment-toggle data-target-select="create-assigned-select" data-panel="create">
-                    <span>Team</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="crm-followup-field" id="create-user-display-container">
-                <span>Assigned to</span>
-                <div class="crm-followup-read-only-display">
-                  <%= currentUser.display_name %> (You)
-                </div>
-              </div>
-
-              <label class="crm-followup-field" id="create-team-select-container" style="display: none;">
-                <span>Assign to Team Member*</span>
-                <select id="create-assigned-select" data-assignee-select data-card-target="create-assignee-card">
-                  <option value="" disabled selected>Select a team member</option>
-                  <% teamMembers.forEach((member) => { %>
-                    <option value="<%= member.id %>" data-name="<%= member.display_name %>" data-email="<%= member.email %>" data-initials="<%= member.initials %>"><%= member.display_name %> (<%= member.email %>)</option>
-                  <% }) %>
-                </select>
-              </label>
-
-              <input type="hidden" name="assigned_to" id="create-assigned-to-user" value="<%= currentUser.id %>">
-
-              <div class="crm-followup-assignee-card" id="create-assignee-card">
-                <span class="crm-followup-avatar is-empty">NA</span>
-                <div>
-                  <strong>Unassigned</strong>
-                  <span>No team member selected</span>
-                </div>
-              </div>
-
-              <div class="crm-followup-form__actions">
-                <button type="submit" class="crm-followup-primary-btn">Create</button>
-                <button type="reset" class="crm-followup-secondary-btn" data-reset-create-panel>Cancel</button>
-              </div>
-            </form>
-          </aside>
-
-          <section class="crm-followup-update-panel" data-update-panel hidden>
-            <div class="crm-followup-panel__header">
-              <h2>Update Followup</h2>
-              <button type="button" class="crm-followup-close-btn" data-close-update-panel aria-label="Close update panel">×</button>
-            </div>
-
-            <form method="POST" class="crm-followup-form" data-update-form>
-              <input type="hidden" name="existing_followup_at" data-update-existing-followup-at>
-              <input type="hidden" name="description" data-update-description-input>
-              <input type="hidden" name="followup_date" data-update-date-input>
-              <input type="hidden" name="followup_time" data-update-time-input>
-              <input type="hidden" name="assigned_to" data-update-assigned-input>
-              <input type="hidden" name="whatsapp_images" data-update-images-input>
-              <input type="hidden" name="closure_reason" data-update-closure-reason-input>
-              <input type="hidden" name="closure_notes" data-update-closure-notes-input>
-
-              <label class="crm-followup-field">
-                <span>Status</span>
-                <select name="status" data-update-status>
-                  <option value="schedule_next_followup">Schedule next followup</option>
-                  <option value="followup_not_needed">Followup not needed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </label>
-
-              <div data-status-panel="schedule_next_followup">
-                <label class="crm-followup-field">
-                  <span>Description*</span>
-                  <textarea rows="5" data-update-description required></textarea>
-                </label>
-
-                <label class="crm-followup-field">
-                  <span>WhatsApp image URLs</span>
-                  <textarea id="update-whatsapp-images" rows="4" placeholder="Paste one image URL per line" data-image-input data-update-images data-preview-target="update-image-preview" data-count-target="update-image-count"></textarea>
-                </label>
-
-                <div class="crm-followup-field">
-                  <div class="crm-followup-attachments-header">
-                    <span>Add Images</span>
-                    <button type="button" class="crm-followup-add-file-btn" data-trigger-file-input="update-file-input" title="Upload images">
-                      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                        <path d="M10 4.5v11M4.5 10h11" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-                      </svg>
-                    </button>
-                  </div>
-                  <input type="file" id="update-file-input" multiple accept="image/*" hidden data-file-input data-target-textarea="update-whatsapp-images">
-                </div>
-
-                <p class="crm-followup-association" data-update-image-count>You have associated 0 image(s)</p>
-                <div class="crm-followup-image-preview" id="update-image-preview"></div>
-                <input type="hidden" id="update-image-count" value="0">
-
-                <div class="crm-followup-grid">
-                  <label class="crm-followup-field">
-                    <span>Next followup date</span>
-                    <input type="date" data-update-date required>
-                  </label>
-                  <label class="crm-followup-field">
-                    <span>Next followup time</span>
-                    <input type="time" data-update-time required>
-                  </label>
-                </div>
-
-                <div class="crm-followup-field">
-                  <span>Assignment Type</span>
-                  <div class="crm-followup-assignment-toggle">
-                    <label>
-                      <input type="radio" name="update_assignment_type" value="user" checked data-assignment-toggle data-target-select="update-assigned-select" data-panel="update">
-                      <span>User</span>
-                    </label>
-                    <label>
-                      <input type="radio" name="update_assignment_type" value="team" data-assignment-toggle data-target-select="update-assigned-select" data-panel="update">
-                      <span>Team</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="crm-followup-field" id="update-user-display-container">
-                  <span>Assigned to</span>
-                  <div class="crm-followup-read-only-display">
-                    <%= currentUser.display_name %> (You)
-                  </div>
-                </div>
-
-                <label class="crm-followup-field" id="update-team-select-container" style="display: none;">
-                  <span>Assign to Team Member*</span>
-                  <select id="update-assigned-select" data-assignee-select data-update-assigned-to data-card-target="update-assignee-card">
-                    <option value="" disabled selected>Select a team member</option>
-                    <% teamMembers.forEach((member) => { %>
-                      <option value="<%= member.id %>" data-name="<%= member.display_name %>" data-email="<%= member.email %>" data-initials="<%= member.initials %>"><%= member.display_name %> (<%= member.email %>)</option>
-                    <% }) %>
-                  </select>
-                </label>
-
-                <input type="hidden" id="update-assigned-to-user" value="<%= currentUser.id %>">
-
-                <div class="crm-followup-assignee-card" id="update-assignee-card">
-                  <span class="crm-followup-avatar is-empty">NA</span>
-                  <div>
-                    <strong>Unassigned</strong>
-                    <span>No team member selected</span>
-                  </div>
-                </div>
-              </div>
-
-              <div data-status-panel="followup_not_needed" hidden>
-                <label class="crm-followup-field">
-                  <span>Followup End Response</span>
-                  <select data-update-closure-reason>
-                    <option value="">Select response</option>
-                    <option value="Conversation complete">Conversation complete</option>
-                    <option value="Issue resolved">Issue resolved</option>
-                    <option value="Not interested">Not interested</option>
-                    <option value="No response">No response</option>
-                  </select>
-                </label>
-
-                <label class="crm-followup-field">
-                  <span>Type here...</span>
-                  <textarea rows="4" data-update-closure-notes placeholder="Add the closing note or response details"></textarea>
-                </label>
-
-                <label class="crm-followup-field">
-                  <span>Description*</span>
-                  <textarea rows="4" data-update-description-closed required></textarea>
-                </label>
-
-                <div class="crm-followup-grid">
-                  <label class="crm-followup-field">
-                    <span>Original followup date</span>
-                    <input type="date" data-update-date-closed>
-                  </label>
-                  <label class="crm-followup-field">
-                    <span>Original followup time</span>
-                    <input type="time" data-update-time-closed>
-                  </label>
-                </div>
-              </div>
-
-              <div data-status-panel="cancelled" hidden>
-                <label class="crm-followup-field">
-                  <span>Cancellation note</span>
-                  <textarea rows="4" data-update-cancel-note placeholder="Add why this followup was cancelled"></textarea>
-                </label>
-
-                <label class="crm-followup-field">
-                  <span>Description*</span>
-                  <textarea rows="4" data-update-description-cancelled required></textarea>
-                </label>
-              </div>
-
-              <div class="crm-followup-form__actions">
-                <button type="submit" class="crm-followup-primary-btn">Update</button>
-                <button type="button" class="crm-followup-secondary-btn" data-close-update-panel>Cancel</button>
-              </div>
-            </form>
-
-            <form method="POST" class="crm-followup-delete-form" data-delete-form onsubmit="return confirm('Delete this followup?');">
-              <button type="submit" class="crm-followup-delete-btn">Delete followup</button>
-            </form>
-          </section>
-        </section>
-      </div>
-    </main>
-  </div>
-
-  <script id="followup-records" type="application/json"><%- followupRecordsJson %></script>
-  <script>
-    const followupRecords = JSON.parse(document.getElementById('followup-records').textContent || '[]');
-    const followupMap = new Map(followupRecords.map((record) => [record.id, record]));
-    const updatePanel = document.querySelector('[data-update-panel]');
-    const updateForm = document.querySelector('[data-update-form]');
-    const deleteForm = document.querySelector('[data-delete-form]');
-    const createPanel = document.querySelector('[data-create-panel]');
-    const createForm = createPanel ? createPanel.querySelector('form') : null;
-    const updateStatusSelect = document.querySelector('[data-update-status]');
-    const statusPanels = document.querySelectorAll('[data-status-panel]');
-    const updateDescriptionOpen = document.querySelector('[data-update-description]');
-    const updateDescriptionClosed = document.querySelector('[data-update-description-closed]');
-    const updateDescriptionCancelled = document.querySelector('[data-update-description-cancelled]');
-    const updateDateOpen = document.querySelector('[data-update-date]');
-    const updateTimeOpen = document.querySelector('[data-update-time]');
-    const updateDateClosed = document.querySelector('[data-update-date-closed]');
-    const updateTimeClosed = document.querySelector('[data-update-time-closed]');
-    const updateExistingFollowupAt = document.querySelector('[data-update-existing-followup-at]');
-    const updateAssignedTo = document.querySelector('[data-update-assigned-to]');
-    const updateClosureReason = document.querySelector('[data-update-closure-reason]');
-    const updateClosureNotes = document.querySelector('[data-update-closure-notes]');
-    const updateCancelNote = document.querySelector('[data-update-cancel-note]');
-    const updateImages = document.querySelector('[data-update-images]');
-    const updateDescriptionInput = document.querySelector('[data-update-description-input]');
-    const updateDateInput = document.querySelector('[data-update-date-input]');
-    const updateTimeInput = document.querySelector('[data-update-time-input]');
-    const updateAssignedInput = document.querySelector('[data-update-assigned-input]');
-    const updateImagesInput = document.querySelector('[data-update-images-input]');
-    const updateClosureReasonInput = document.querySelector('[data-update-closure-reason-input]');
-    const updateClosureNotesInput = document.querySelector('[data-update-closure-notes-input]');
-    const imageCountLabels = document.querySelectorAll('[data-image-count-label], [data-update-image-count]');
-
-    function splitImageUrls(value) {
-      return String(value || '')
-        .split(/\r?\n/)
-        .map((item) => item.trim())
-        .filter(Boolean);
-    }
-
-    function updateAssociationLabel() {
-      imageCountLabels.forEach((label) => {
-        const targetId = label.dataset.countTarget || (label.hasAttribute('data-update-image-count') ? 'update-image-count' : 'create-image-count');
-        const target = document.getElementById(targetId);
-        const count = target ? Number(target.value || 0) : 0;
-        label.textContent = `You have associated ${count} image(s)`;
-      });
-    }
-
-    function renderImagePreview(textarea) {
-      const previewId = textarea.dataset.previewTarget;
-      const countId = textarea.dataset.countTarget;
-      const preview = previewId ? document.getElementById(previewId) : null;
-      const countField = countId ? document.getElementById(countId) : null;
-      const imageUrls = splitImageUrls(textarea.value);
-
-      if (countField) {
-        countField.value = String(imageUrls.length);
-      }
-
-      if (!preview) {
-        updateAssociationLabel();
-        return;
-      }
-
-      preview.innerHTML = '';
-
-      if (!imageUrls.length) {
-        preview.classList.remove('has-images');
-        updateAssociationLabel();
-        return;
-      }
-
-      preview.classList.add('has-images');
-
-      imageUrls.forEach((url, index) => {
-        const link = document.createElement('a');
-        link.href = url;
-        link.target = '_blank';
-        link.rel = 'noreferrer';
-        link.className = 'crm-followup-image-preview__item';
-
-        const image = document.createElement('img');
-        image.src = url;
-        image.alt = `WhatsApp image ${index + 1}`;
-        image.loading = 'lazy';
-
-        link.appendChild(image);
-        preview.appendChild(link);
-      });
-
-      updateAssociationLabel();
-    }
-
-    function updateAssigneeCard(select) {
-      const cardId = select.dataset.cardTarget;
-      const card = cardId ? document.getElementById(cardId) : null;
-      if (!card) return;
-
-      const option = select.options[select.selectedIndex];
-      const avatar = card.querySelector('.crm-followup-avatar');
-      const name = card.querySelector('strong');
-      const email = card.querySelector('span:last-child');
-
-      if (!option || !option.value) {
-        avatar.textContent = 'NA';
-        avatar.classList.add('is-empty');
-        name.textContent = 'Unassigned';
-        email.textContent = 'No team member selected';
-        return;
-      }
-
-      avatar.textContent = option.dataset.initials || 'NA';
-      avatar.classList.remove('is-empty');
-      name.textContent = option.dataset.name || option.textContent;
-      email.textContent = option.dataset.email || '';
-    }
-
-    function syncStatusPanels() {
-      const currentStatus = updateStatusSelect ? updateStatusSelect.value : 'schedule_next_followup';
-
-      statusPanels.forEach((panel) => {
-        const isActive = panel.dataset.statusPanel === currentStatus;
-        panel.hidden = !isActive;
-      });
-
-      if (updateDescriptionOpen) {
-        updateDescriptionOpen.required = currentStatus === 'schedule_next_followup';
-      }
-      if (updateDescriptionClosed) {
-        updateDescriptionClosed.required = currentStatus === 'followup_not_needed';
-      }
-      if (updateDescriptionCancelled) {
-        updateDescriptionCancelled.required = currentStatus === 'cancelled';
-      }
-      if (updateDateOpen) {
-        updateDateOpen.required = currentStatus === 'schedule_next_followup';
-      }
-      if (updateTimeOpen) {
-        updateTimeOpen.required = currentStatus === 'schedule_next_followup';
-      }
-    }
-
-    function syncUpdatePayloadFields() {
-      if (!updateStatusSelect) return;
-
-      const currentStatus = updateStatusSelect.value;
-      const activeDescription =
-        currentStatus === 'followup_not_needed'
-          ? updateDescriptionClosed.value
-          : currentStatus === 'cancelled'
-            ? updateDescriptionCancelled.value
-            : updateDescriptionOpen.value;
-      const activeDate = currentStatus === 'schedule_next_followup' ? updateDateOpen.value : updateDateClosed.value || updateDateOpen.value;
-      const activeTime = currentStatus === 'schedule_next_followup' ? updateTimeOpen.value : updateTimeClosed.value || updateTimeOpen.value;
-      const activeClosureNotes =
-        currentStatus === 'cancelled'
-          ? updateCancelNote.value
-          : updateClosureNotes.value;
-
-      updateDescriptionInput.value = activeDescription || '';
-      updateDateInput.value = activeDate || '';
-      updateTimeInput.value = activeTime || '';
-      updateAssignedInput.value = updateAssignedTo.value || '';
-      updateImagesInput.value = updateImages.value || '';
-      updateClosureReasonInput.value = updateClosureReason.value || '';
-      updateClosureNotesInput.value = activeClosureNotes || '';
-    }
-
-    function syncAssignmentToggle(toggle) {
-      const panel = toggle.dataset.panel;
-      const type = toggle.value;
-      const userDisplay = document.getElementById(`${panel}-user-display-container`);
-      const teamContainer = document.getElementById(`${panel}-team-select-container`);
-      const teamSelect = document.getElementById(`${panel}-assigned-select`);
-      const userHidden = document.getElementById(`${panel}-assigned-to-user`);
-      const cardId = teamSelect.dataset.cardTarget;
-      const card = document.getElementById(cardId);
-
-      if (type === 'user') {
-        userDisplay.style.display = 'flex';
-        teamContainer.style.display = 'none';
-        teamSelect.name = ''; // Disable select name so it's not sent
-        teamSelect.required = false;
-        if (userHidden) userHidden.name = 'assigned_to';
-
-        // Update card to current user
-        if (card) {
+      <script id="followup-records" type="application/json"><%- followupRecordsJson %></script>
+      <script>
+        const followupRecords = JSON.parse(document.getElementById('followup-records').textContent || '[]');
+        const followupMap = new Map(followupRecords.map((record) => [record.id, record]));
+        const updatePanel = document.querySelector('[data-update-panel]');
+        const updateForm = document.querySelector('[data-update-form]');
+        const deleteForm = document.querySelector('[data-delete-form]');
+        const createPanel = document.querySelector('[data-create-panel]');
+        const createForm = createPanel ? createPanel.querySelector('form') : null;
+        const updateStatusSelect = document.querySelector('[data-update-status]');
+        const statusPanels = document.querySelectorAll('[data-status-panel]');
+        const updateDescriptionOpen = document.querySelector('[data-update-description]');
+        const updateDescriptionClosed = document.querySelector('[data-update-description-closed]');
+        const updateDescriptionCancelled = document.querySelector('[data-update-description-cancelled]');
+        const updateDateOpen = document.querySelector('[data-update-date]');
+        const updateTimeOpen = document.querySelector('[data-update-time]');
+        const updateDateClosed = document.querySelector('[data-update-date-closed]');
+        const updateTimeClosed = document.querySelector('[data-update-time-closed]');
+        const updateExistingFollowupAt = document.querySelector('[data-update-existing-followup-at]');
+        const updateAssignedTo = document.querySelector('[data-update-assigned-to]');
+        const updateClosureReason = document.querySelector('[data-update-closure-reason]');
+        const updateClosureNotes = document.querySelector('[data-update-closure-notes]');
+        const updateCancelNote = document.querySelector('[data-update-cancel-note]');
+        const updateImages = document.querySelector('[data-update-images]');
+        const updateDescriptionInput = document.querySelector('[data-update-description-input]');
+        const updateDateInput = document.querySelector('[data-update-date-input]');
+        const updateTimeInput = document.querySelector('[data-update-time-input]');
+        const updateAssignedInput = document.querySelector('[data-update-assigned-input]');
+        const updateImagesInput = document.querySelector('[data-update-images-input]');
+        const updateClosureReasonInput = document.querySelector('[data-update-closure-reason-input]');
+        const updateClosureNotesInput = document.querySelector('[data-update-closure-notes-input]');
+        const imageCountLabels = document.querySelectorAll('[data-image-count-label], [data-update-image-count]');
+
+        function splitImageUrls(value) {
+          return String(value || '')
+            .split(/\r?\n/)
+            .map((item) => item.trim())
+            .filter(Boolean);
+        }
+
+        function updateAssociationLabel() {
+          imageCountLabels.forEach((label) => {
+            const targetId = label.dataset.countTarget || (label.hasAttribute('data-update-image-count') ? 'update-image-count' : 'create-image-count');
+            const target = document.getElementById(targetId);
+            const count = target ? Number(target.value || 0) : 0;
+            label.textContent = `You have associated ${count} image(s)`;
+          });
+        }
+
+        function renderImagePreview(textarea) {
+          const previewId = textarea.dataset.previewTarget;
+          const countId = textarea.dataset.countTarget;
+          const preview = previewId ? document.getElementById(previewId) : null;
+          const countField = countId ? document.getElementById(countId) : null;
+          const imageUrls = splitImageUrls(textarea.value);
+
+          if (countField) {
+            countField.value = String(imageUrls.length);
+          }
+
+          if (!preview) {
+            updateAssociationLabel();
+            return;
+          }
+
+          preview.innerHTML = '';
+
+          if (!imageUrls.length) {
+            preview.classList.remove('has-images');
+            updateAssociationLabel();
+            return;
+          }
+
+          preview.classList.add('has-images');
+
+          imageUrls.forEach((url, index) => {
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.rel = 'noreferrer';
+            link.className = 'crm-followup-image-preview__item';
+
+            const image = document.createElement('img');
+            image.src = url;
+            image.alt = `WhatsApp image ${index + 1}`;
+            image.loading = 'lazy';
+
+            link.appendChild(image);
+            preview.appendChild(link);
+          });
+
+          updateAssociationLabel();
+        }
+
+        function updateAssigneeCard(select) {
+          const cardId = select.dataset.cardTarget;
+          const card = cardId ? document.getElementById(cardId) : null;
+          if (!card) return;
+
+          const option = select.options[select.selectedIndex];
           const avatar = card.querySelector('.crm-followup-avatar');
           const name = card.querySelector('strong');
           const email = card.querySelector('span:last-child');
-          avatar.textContent = '<%= currentUser.initials %>';
-          avatar.classList.remove('is-empty');
-          name.textContent = '<%= currentUser.display_name %>';
-          email.textContent = '<%= currentUser.email %>';
-        }
-      } else {
-        userDisplay.style.display = 'none';
-        teamContainer.style.display = 'flex';
-        teamSelect.name = 'assigned_to';
-        teamSelect.required = true;
-        if (userHidden) userHidden.name = ''; // Disable hidden name
 
-        // Update card to select value
-        updateAssigneeCard(teamSelect);
-      }
-
-      if (panel === 'update') {
-        syncUpdatePayloadFields();
-      }
-    }
-
-    function fillUpdatePanel(record) {
-      if (!record || !updateForm || !updatePanel) return;
-
-      closeCreatePanel(); // Ensure add panel is closed
-
-      updateForm.action = `/followup/${record.id}/update`;
-      deleteForm.action = `/followup/${record.id}/delete`;
-      updateExistingFollowupAt.value = record.followup_at || '';
-      updateStatusSelect.value = record.status_ui_value || 'schedule_next_followup';
-      updateDescriptionOpen.value = record.description || '';
-      updateDescriptionClosed.value = record.description || '';
-      updateDescriptionCancelled.value = record.description || '';
-      updateDateOpen.value = record.followup_date || '';
-      updateTimeOpen.value = record.followup_time || '';
-      updateDateClosed.value = record.followup_date || '';
-      updateTimeClosed.value = record.followup_time || '';
-      updateAssignedTo.value = record.assigned_to_id || '';
-      updateClosureReason.value = record.closure_reason || '';
-      updateClosureNotes.value = record.closure_notes || '';
-      updateCancelNote.value = record.closure_notes || '';
-      updateImages.value = record.whatsapp_images_text || '';
-
-      renderImagePreview(updateImages);
-      updateAssigneeCard(updateAssignedTo);
-
-      // Handle assignment toggle
-      const isAssignedToMe = record.assigned_to_id === '<%= currentUser.id %>';
-      const assignmentToggle = updatePanel.querySelector(`input[name="update_assignment_type"][value="${isAssignedToMe ? 'user' : 'team'}"]`);
-      if (assignmentToggle) {
-        assignmentToggle.checked = true;
-        syncAssignmentToggle(assignmentToggle);
-      }
-
-      syncStatusPanels();
-      syncUpdatePayloadFields();
-
-      updatePanel.hidden = false;
-      updatePanel.classList.add('is-visible');
-    }
-
-    function closeUpdatePanel() {
-      if (!updatePanel) return;
-      updatePanel.hidden = true;
-      updatePanel.classList.remove('is-visible');
-    }
-
-    document.querySelectorAll('[data-followup-tab]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const target = button.dataset.followupTab;
-        localStorage.setItem('crmone_followup_active_tab', target);
-
-        document.querySelectorAll('[data-followup-tab]').forEach((tabButton) => {
-          tabButton.classList.toggle('is-active', tabButton === button);
-        });
-
-        document.querySelectorAll('[data-followup-pane]').forEach((pane) => {
-          pane.classList.toggle('is-active', pane.dataset.followupPane === target);
-        });
-      });
-    });
-
-    // Restore active tab on load
-    const savedTab = localStorage.getItem('crmone_followup_active_tab');
-    if (savedTab) {
-      const tabButton = document.querySelector(`[data-followup-tab="${savedTab}"]`);
-      if (tabButton) {
-        tabButton.click();
-      }
-    }
-
-    document.querySelectorAll('[data-followup-open]').forEach((trigger) => {
-      trigger.addEventListener('click', (event) => {
-        const followupId = trigger.dataset.followupId || trigger.closest('[data-followup-id]')?.dataset.followupId;
-        if (!followupId) return;
-        event.stopPropagation();
-        fillUpdatePanel(followupMap.get(followupId));
-      });
-    });
-
-    document.querySelectorAll('[data-close-update-panel]').forEach((button) => {
-      button.addEventListener('click', closeUpdatePanel);
-    });
-
-    if (updateStatusSelect) {
-      updateStatusSelect.addEventListener('change', () => {
-        syncStatusPanels();
-        syncUpdatePayloadFields();
-      });
-      syncStatusPanels();
-    }
-
-    document.querySelectorAll('[data-image-input]').forEach((textarea) => {
-      textarea.addEventListener('input', () => renderImagePreview(textarea));
-      renderImagePreview(textarea);
-    });
-
-    document.querySelectorAll('[data-assignee-select]').forEach((select) => {
-      select.addEventListener('change', () => {
-        updateAssigneeCard(select);
-        if (select === updateAssignedTo) {
-          syncUpdatePayloadFields();
-        }
-      });
-      updateAssigneeCard(select);
-    });
-
-    document.querySelectorAll('[data-assignment-toggle]').forEach((toggle) => {
-      toggle.addEventListener('change', () => syncAssignmentToggle(toggle));
-      if (toggle.checked) syncAssignmentToggle(toggle);
-    });
-
-    [
-      updateDescriptionOpen,
-      updateDescriptionClosed,
-      updateDescriptionCancelled,
-      updateDateOpen,
-      updateTimeOpen,
-      updateDateClosed,
-      updateTimeClosed,
-      updateClosureReason,
-      updateClosureNotes,
-      updateCancelNote,
-      updateImages,
-    ].forEach((field) => {
-      if (!field) return;
-      field.addEventListener('input', syncUpdatePayloadFields);
-      field.addEventListener('change', syncUpdatePayloadFields);
-    });
-
-    // Support opening update panel from URL param
-    window.addEventListener('load', () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const openId = urlParams.get('open');
-      if (openId && typeof followupMap !== 'undefined' && followupMap.has(openId)) {
-        fillUpdatePanel(followupMap.get(openId));
-        // Optional: Clean up URL
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, '', newUrl);
-      }
-    });
-
-    function closeCreatePanel() {
-      if (!createPanel) return;
-      createPanel.classList.remove('is-visible');
-    }
-
-    document.querySelectorAll('[data-reset-create-panel]').forEach((button) => {
-      button.addEventListener('click', () => {
-        closeCreatePanel();
-        if (!createForm) return;
-        window.setTimeout(() => {
-          createForm.querySelectorAll('[data-image-input]').forEach((textarea) => renderImagePreview(textarea));
-          createForm.querySelectorAll('[data-assignee-select]').forEach((select) => updateAssigneeCard(select));
-          
-          // Reset assignment toggle to User
-          const userToggle = createForm.querySelector('input[name="create_assignment_type"][value="user"]');
-          if (userToggle) {
-            userToggle.checked = true;
-            syncAssignmentToggle(userToggle);
+          if (!option || !option.value) {
+            avatar.textContent = 'NA';
+            avatar.classList.add('is-empty');
+            name.textContent = 'Unassigned';
+            email.textContent = 'No team member selected';
+            return;
           }
-        }, 0);
-      });
-    });
 
-    const openCreatePanelButton = document.querySelector('[data-open-create-panel]');
-    if (openCreatePanelButton) {
-      openCreatePanelButton.addEventListener('click', () => {
-        closeUpdatePanel();
-        createPanel.classList.add('is-visible');
-      });
-    }
-
-    const openFirstFollowupButton = document.querySelector('[data-open-first-followup]');
-    if (openFirstFirstButton) {
-      openFirstFollowupButton.addEventListener('click', () => {
-        const firstRecord = followupRecords[0];
-        if (firstRecord) {
-          fillUpdatePanel(firstRecord);
-        }
-      });
-    }
-
-    const createDateField = createForm ? createForm.querySelector('input[name="followup_date"]') : null;
-    const createTimeField = createForm ? createForm.querySelector('input[name="followup_time"]') : null;
-    if (createDateField && createTimeField && !createDateField.value && !createTimeField.value) {
-      const now = new Date();
-      const offsetMs = now.getTimezoneOffset() * 60 * 1000;
-      const localValue = new Date(now.getTime() - offsetMs).toISOString().slice(0, 16);
-      createDateField.value = localValue.slice(0, 10);
-      createTimeField.value = localValue.slice(11, 16);
-    }
-
-    if (updateForm) {
-      updateForm.addEventListener('submit', syncUpdatePayloadFields);
-    }
-
-    // File upload handling
-    document.querySelectorAll('[data-trigger-file-input]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const inputId = btn.dataset.triggerFileInput;
-        document.getElementById(inputId)?.click();
-      });
-    });
-
-    document.querySelectorAll('[data-file-input]').forEach(input => {
-      input.addEventListener('change', async (e) => {
-        const files = e.target.files;
-        if (!files.length) return;
-
-        const targetTextareaId = input.dataset.targetTextarea;
-        const textarea = document.getElementById(targetTextareaId);
-        if (!textarea) return;
-
-        const formData = new FormData();
-        for (const file of files) {
-          formData.append('files', file);
+          avatar.textContent = option.dataset.initials || 'NA';
+          avatar.classList.remove('is-empty');
+          name.textContent = option.dataset.name || option.textContent;
+          email.textContent = option.dataset.email || '';
         }
 
-        try {
-          const originalText = textarea.value;
-          textarea.disabled = true;
-          const btn = document.querySelector(`[data-trigger-file-input="${input.id}"]`);
-          if (btn) btn.style.opacity = '0.5';
+        function syncStatusPanels() {
+          const currentStatus = updateStatusSelect ? updateStatusSelect.value : 'schedule_next_followup';
 
-          const response = await fetch('/followup/upload', {
-            method: 'POST',
-            body: formData
+          statusPanels.forEach((panel) => {
+            const isActive = panel.dataset.statusPanel === currentStatus;
+            panel.hidden = !isActive;
           });
 
-          if (!response.ok) throw new Error('Upload failed');
+          if (updateDescriptionOpen) {
+            updateDescriptionOpen.required = currentStatus === 'schedule_next_followup';
+          }
+          if (updateDescriptionClosed) {
+            updateDescriptionClosed.required = currentStatus === 'followup_not_needed';
+          }
+          if (updateDescriptionCancelled) {
+            updateDescriptionCancelled.required = currentStatus === 'cancelled';
+          }
+          if (updateDateOpen) {
+            updateDateOpen.required = currentStatus === 'schedule_next_followup';
+          }
+          if (updateTimeOpen) {
+            updateTimeOpen.required = currentStatus === 'schedule_next_followup';
+          }
+        }
 
-          const data = await response.json();
-          if (data.urls && data.urls.length) {
-            const currentUrls = splitImageUrls(textarea.value);
-            const newUrls = [...currentUrls, ...data.urls];
-            textarea.value = newUrls.join('\n');
-            renderImagePreview(textarea);
-            if (textarea === updateImages) {
+        function syncUpdatePayloadFields() {
+          if (!updateStatusSelect) return;
+
+          const currentStatus = updateStatusSelect.value;
+          const activeDescription =
+            currentStatus === 'followup_not_needed'
+              ? updateDescriptionClosed.value
+              : currentStatus === 'cancelled'
+                ? updateDescriptionCancelled.value
+                : updateDescriptionOpen.value;
+          const activeDate = currentStatus === 'schedule_next_followup' ? updateDateOpen.value : updateDateClosed.value || updateDateOpen.value;
+          const activeTime = currentStatus === 'schedule_next_followup' ? updateTimeOpen.value : updateTimeClosed.value || updateTimeOpen.value;
+          const activeClosureNotes =
+            currentStatus === 'cancelled'
+              ? updateCancelNote.value
+              : updateClosureNotes.value;
+
+          updateDescriptionInput.value = activeDescription || '';
+          updateDateInput.value = activeDate || '';
+          updateTimeInput.value = activeTime || '';
+          updateAssignedInput.value = updateAssignedTo.value || '';
+          updateImagesInput.value = updateImages.value || '';
+          updateClosureReasonInput.value = updateClosureReason.value || '';
+          updateClosureNotesInput.value = activeClosureNotes || '';
+        }
+
+        function syncAssignmentToggle(toggle) {
+          const panel = toggle.dataset.panel;
+          const type = toggle.value;
+          const userDisplay = document.getElementById(`${panel}-user-display-container`);
+          const teamContainer = document.getElementById(`${panel}-team-select-container`);
+          const teamSelect = document.getElementById(`${panel}-assigned-select`);
+          const userHidden = document.getElementById(`${panel}-assigned-to-user`);
+          const cardId = teamSelect.dataset.cardTarget;
+          const card = document.getElementById(cardId);
+
+          if (type === 'user') {
+            userDisplay.style.display = 'flex';
+            teamContainer.style.display = 'none';
+            teamSelect.name = ''; // Disable select name so it's not sent
+            teamSelect.required = false;
+            if (userHidden) userHidden.name = 'assigned_to';
+
+            // Update card to current user
+            if (card) {
+              const avatar = card.querySelector('.crm-followup-avatar');
+              const name = card.querySelector('strong');
+              const email = card.querySelector('span:last-child');
+              avatar.textContent = '<%= currentUser.initials %>';
+              avatar.classList.remove('is-empty');
+              name.textContent = '<%= currentUser.display_name %>';
+              email.textContent = '<%= currentUser.email %>';
+            }
+          } else {
+            userDisplay.style.display = 'none';
+            teamContainer.style.display = 'flex';
+            teamSelect.name = 'assigned_to';
+            teamSelect.required = true;
+            if (userHidden) userHidden.name = ''; // Disable hidden name
+
+            // Update card to select value
+            updateAssigneeCard(teamSelect);
+          }
+
+          if (panel === 'update') {
+            syncUpdatePayloadFields();
+          }
+        }
+
+        function fillUpdatePanel(record) {
+          if (!record || !updateForm || !updatePanel) return;
+
+          closeCreatePanel(); // Ensure add panel is closed
+
+          updateForm.action = `/followup/${record.id}/update`;
+          deleteForm.action = `/followup/${record.id}/delete`;
+          updateExistingFollowupAt.value = record.followup_at || '';
+          updateStatusSelect.value = record.status_ui_value || 'schedule_next_followup';
+          updateDescriptionOpen.value = record.description || '';
+          updateDescriptionClosed.value = record.description || '';
+          updateDescriptionCancelled.value = record.description || '';
+          updateDateOpen.value = record.followup_date || '';
+          updateTimeOpen.value = record.followup_time || '';
+          updateDateClosed.value = record.followup_date || '';
+          updateTimeClosed.value = record.followup_time || '';
+          updateAssignedTo.value = record.assigned_to_id || '';
+          updateClosureReason.value = record.closure_reason || '';
+          updateClosureNotes.value = record.closure_notes || '';
+          updateCancelNote.value = record.closure_notes || '';
+          updateImages.value = record.whatsapp_images_text || '';
+
+          renderImagePreview(updateImages);
+          updateAssigneeCard(updateAssignedTo);
+
+          // Handle assignment toggle
+          const isAssignedToMe = record.assigned_to_id === '<%= currentUser.id %>';
+          const assignmentToggle = updatePanel.querySelector(`input[name="update_assignment_type"][value="${isAssignedToMe ? 'user' : 'team'}"]`);
+          if (assignmentToggle) {
+            assignmentToggle.checked = true;
+            syncAssignmentToggle(assignmentToggle);
+          }
+
+          syncStatusPanels();
+          syncUpdatePayloadFields();
+
+          updatePanel.hidden = false;
+          updatePanel.classList.add('is-visible');
+        }
+
+        function closeUpdatePanel() {
+          if (!updatePanel) return;
+          updatePanel.hidden = true;
+          updatePanel.classList.remove('is-visible');
+        }
+
+        document.querySelectorAll('[data-followup-tab]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const target = button.dataset.followupTab;
+            localStorage.setItem('crmone_followup_active_tab', target);
+
+            document.querySelectorAll('[data-followup-tab]').forEach((tabButton) => {
+              tabButton.classList.toggle('is-active', tabButton === button);
+            });
+
+            document.querySelectorAll('[data-followup-pane]').forEach((pane) => {
+              pane.classList.toggle('is-active', pane.dataset.followupPane === target);
+            });
+          });
+        });
+
+        // Restore active tab on load
+        const savedTab = localStorage.getItem('crmone_followup_active_tab');
+        if (savedTab) {
+          const tabButton = document.querySelector(`[data-followup-tab="${savedTab}"]`);
+          if (tabButton) {
+            tabButton.click();
+          }
+        }
+
+        document.querySelectorAll('[data-followup-open]').forEach((trigger) => {
+          trigger.addEventListener('click', (event) => {
+            const followupId = trigger.dataset.followupId || trigger.closest('[data-followup-id]')?.dataset.followupId;
+            if (!followupId) return;
+            event.stopPropagation();
+            fillUpdatePanel(followupMap.get(followupId));
+          });
+        });
+
+        document.querySelectorAll('[data-close-update-panel]').forEach((button) => {
+          button.addEventListener('click', closeUpdatePanel);
+        });
+
+        if (updateStatusSelect) {
+          updateStatusSelect.addEventListener('change', () => {
+            syncStatusPanels();
+            syncUpdatePayloadFields();
+          });
+          syncStatusPanels();
+        }
+
+        document.querySelectorAll('[data-image-input]').forEach((textarea) => {
+          textarea.addEventListener('input', () => renderImagePreview(textarea));
+          renderImagePreview(textarea);
+        });
+
+        document.querySelectorAll('[data-assignee-select]').forEach((select) => {
+          select.addEventListener('change', () => {
+            updateAssigneeCard(select);
+            if (select === updateAssignedTo) {
               syncUpdatePayloadFields();
             }
+          });
+          updateAssigneeCard(select);
+        });
+
+        document.querySelectorAll('[data-assignment-toggle]').forEach((toggle) => {
+          toggle.addEventListener('change', () => syncAssignmentToggle(toggle));
+          if (toggle.checked) syncAssignmentToggle(toggle);
+        });
+
+        [
+          updateDescriptionOpen,
+          updateDescriptionClosed,
+          updateDescriptionCancelled,
+          updateDateOpen,
+          updateTimeOpen,
+          updateDateClosed,
+          updateTimeClosed,
+          updateClosureReason,
+          updateClosureNotes,
+          updateCancelNote,
+          updateImages,
+        ].forEach((field) => {
+          if (!field) return;
+          field.addEventListener('input', syncUpdatePayloadFields);
+          field.addEventListener('change', syncUpdatePayloadFields);
+        });
+
+        // Support opening update panel from URL param
+        window.addEventListener('load', () => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const openId = urlParams.get('open');
+          if (openId && typeof followupMap !== 'undefined' && followupMap.has(openId)) {
+            fillUpdatePanel(followupMap.get(openId));
+            // Optional: Clean up URL
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
           }
-        } catch (err) {
-          console.error('Upload error:', err);
-          alert('Failed to upload images. Please try again.');
-        } finally {
-          textarea.disabled = false;
-          input.value = ''; // Reset input
-          const btn = document.querySelector(`[data-trigger-file-input="${input.id}"]`);
-          if (btn) btn.style.opacity = '1';
+        });
+
+        function closeCreatePanel() {
+          if (!createPanel) return;
+          createPanel.classList.remove('is-visible');
         }
-      });
-    });
-  </script>
-</body>
+
+        document.querySelectorAll('[data-reset-create-panel]').forEach((button) => {
+          button.addEventListener('click', () => {
+            closeCreatePanel();
+            if (!createForm) return;
+            window.setTimeout(() => {
+              createForm.querySelectorAll('[data-image-input]').forEach((textarea) => renderImagePreview(textarea));
+              createForm.querySelectorAll('[data-assignee-select]').forEach((select) => updateAssigneeCard(select));
+
+              // Reset assignment toggle to User
+              const userToggle = createForm.querySelector('input[name="create_assignment_type"][value="user"]');
+              if (userToggle) {
+                userToggle.checked = true;
+                syncAssignmentToggle(userToggle);
+              }
+            }, 0);
+          });
+        });
+
+        const openCreatePanelButton = document.querySelector('[data-open-create-panel]');
+        if (openCreatePanelButton) {
+          openCreatePanelButton.addEventListener('click', () => {
+            closeUpdatePanel();
+            createPanel.classList.add('is-visible');
+          });
+        }
+
+        const openFirstFollowupButton = document.querySelector('[data-open-first-followup]');
+        if (openFirstFirstButton) {
+          openFirstFollowupButton.addEventListener('click', () => {
+            const firstRecord = followupRecords[0];
+            if (firstRecord) {
+              fillUpdatePanel(firstRecord);
+            }
+          });
+        }
+
+        const createDateField = createForm ? createForm.querySelector('input[name="followup_date"]') : null;
+        const createTimeField = createForm ? createForm.querySelector('input[name="followup_time"]') : null;
+        if (createDateField && createTimeField && !createDateField.value && !createTimeField.value) {
+          const now = new Date();
+          const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+          const localValue = new Date(now.getTime() - offsetMs).toISOString().slice(0, 16);
+          createDateField.value = localValue.slice(0, 10);
+          createTimeField.value = localValue.slice(11, 16);
+        }
+
+        if (updateForm) {
+          updateForm.addEventListener('submit', syncUpdatePayloadFields);
+        }
+
+        // File upload handling
+        document.querySelectorAll('[data-trigger-file-input]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const inputId = btn.dataset.triggerFileInput;
+            document.getElementById(inputId)?.click();
+          });
+        });
+
+        document.querySelectorAll('[data-file-input]').forEach(input => {
+          input.addEventListener('change', async (e) => {
+            const files = e.target.files;
+            if (!files.length) return;
+
+            const targetTextareaId = input.dataset.targetTextarea;
+            const textarea = document.getElementById(targetTextareaId);
+            if (!textarea) return;
+
+            const formData = new FormData();
+            for (const file of files) {
+              formData.append('files', file);
+            }
+
+            try {
+              const originalText = textarea.value;
+              textarea.disabled = true;
+              const btn = document.querySelector(`[data-trigger-file-input="${input.id}"]`);
+              if (btn) btn.style.opacity = '0.5';
+
+              const response = await fetch('/followup/upload', {
+                method: 'POST',
+                body: formData
+              });
+
+              if (!response.ok) throw new Error('Upload failed');
+
+              const data = await response.json();
+              if (data.urls && data.urls.length) {
+                const currentUrls = splitImageUrls(textarea.value);
+                const newUrls = [...currentUrls, ...data.urls];
+                textarea.value = newUrls.join('\n');
+                renderImagePreview(textarea);
+                if (textarea === updateImages) {
+                  syncUpdatePayloadFields();
+                }
+              }
+            } catch (err) {
+              console.error('Upload error:', err);
+              alert('Failed to upload images. Please try again.');
+            } finally {
+              textarea.disabled = false;
+              input.value = ''; // Reset input
+              const btn = document.querySelector(`[data-trigger-file-input="${input.id}"]`);
+              if (btn) btn.style.opacity = '1';
+            }
+          });
+        });
+      </script>
+  </body>
+
 </html>
