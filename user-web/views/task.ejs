@@ -61,7 +61,7 @@
                   <div class="filter-bar">
                     <div class="filter-bar-left">
                       <div class="filter-dropdown">
-                        <button class="filter-btn task-filter-btn" type="button">Users ▾</button>
+                        <button class="filter-btn task-filter-btn" type="button">Users</button>
                         <div class="filter-menu">
                           <% teamMembers.forEach((member)=> { %>
                             <label><input class="user-filter" type="checkbox" value="<%= member.id %>">
@@ -72,7 +72,7 @@
                       </div>
 
                       <div class="filter-dropdown">
-                        <button class="filter-btn task-filter-btn" type="button">Task Types ▾</button>
+                        <button class="filter-btn task-filter-btn" type="button">Task Types</button>
                         <div class="filter-menu">
                           <% taskTypes.forEach((type)=> { %>
                             <label><input type="radio" name="type" value="<%= type %>">
@@ -85,7 +85,7 @@
                       </div>
 
                       <div class="filter-dropdown">
-                        <button class="filter-btn task-filter-btn" type="button">Task Status ▾</button>
+                        <button class="filter-btn task-filter-btn" type="button">Task Status</button>
                         <div class="filter-menu">
                           <% taskStatuses.forEach((statusName)=> { %>
                             <label><input type="radio" name="status" value="<%= statusName %>">
@@ -97,7 +97,7 @@
                       </div>
 
                       <div class="filter-dropdown">
-                        <button class="filter-btn task-filter-btn" type="button">Priority ▾</button>
+                        <button class="filter-btn task-filter-btn" type="button">Priority</button>
                         <div class="filter-menu">
                           <label><input type="radio" name="priority" value="Low"> 🟢 Low</label>
                           <label><input type="radio" name="priority" value="Medium"> 🟡 Medium</label>
@@ -107,7 +107,7 @@
                       </div>
 
                       <div class="filter-dropdown">
-                        <button class="filter-btn task-filter-btn" type="button">Select Tag ▾</button>
+                        <button class="filter-btn task-filter-btn" type="button">Select Tag</button>
                         <div class="filter-menu">
                           <div class="filter-menu-inline">
                             <input type="text" placeholder="Search tag..." class="tag-search form-input">
@@ -116,7 +116,7 @@
                       </div>
 
                       <div class="filter-dropdown">
-                        <button class="filter-btn task-filter-btn" type="button">Date Range ▾</button>
+                        <button class="filter-btn task-filter-btn" type="button">Date Range</button>
                         <div class="filter-menu task-date-filter-menu">
                           <label class="task-date-filter-label" for="dateFrom">From</label>
                           <input type="date" id="dateFrom" class="form-input">
@@ -428,7 +428,7 @@
               <select id="createAssignedTo" name="assigned_to" class="form-input task-select-spacing">
                 <option value="">Unassigned</option>
                 <% teamMembers.forEach((member)=> { %>
-                  <option value="<%= member.id %>" <%=taskUser && member.id===taskUser.id ? 'selected' : '' %>><%=
+                  <option value="<%= member.id %>" <%=taskUser && String(member.id) === String(taskUser.id) ? 'selected' : '' %>><%=
                       member.email %>
                   </option>
                   <% }) %>
@@ -454,7 +454,7 @@
               <select id="createAssignedBy" name="assigned_by" class="form-input task-select-spacing">
                 <option value="">Unassigned</option>
                 <% teamMembers.forEach((member)=> { %>
-                  <option value="<%= member.id %>" <%=taskUser && member.id===taskUser.id ? 'selected' : '' %>><%=
+                  <option value="<%= member.id %>" <%=taskUser && String(member.id) === String(taskUser.id) ? 'selected' : '' %>><%=
                       member.email %>
                   </option>
                   <% }) %>
@@ -877,7 +877,7 @@
           const card = document.getElementById(cardId);
           if (!select || !card) return;
 
-          const selected = TEAM_MEMBERS.find((member) => member.id === select.value);
+          const selected = TEAM_MEMBERS.find((member) => String(member.id) === String(select.value));
           const title = card.querySelector('.assign-card-title');
           const subtitle = card.querySelector('.assign-card-subtitle');
           const avatar = card.querySelector('.avatar-circle');
@@ -889,7 +889,7 @@
             return;
           }
 
-          title.textContent = `${selected.email}${selected.id === '<%= taskUser ? taskUser.id : "" %>' ? ' (Me)' : ''} 📞`;
+          title.textContent = `${selected.email}${String(selected.id) === String('<%= taskUser ? taskUser.id : "" %>') ? ' (Me)' : ''} 📞`;
           subtitle.textContent = `✉ ${selected.email}`;
           avatar.textContent = selected.email.charAt(0).toUpperCase();
         }

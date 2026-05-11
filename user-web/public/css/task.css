@@ -154,7 +154,7 @@
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   /* ensure text doesn't wrap into dots and has enough width */
-  min-width: 88px;
+  min-width: 110px;
   padding-left: 12px;
   padding-right: 12px;
 }
@@ -690,11 +690,21 @@
 }
 
 .create-panel-footer {
+  padding: 16px 20px;
+  background: #FFFFFF;
   border-top: 1px solid #E2E8F0;
-  border-bottom: 0;
   display: flex;
-  gap: 10px;
-  margin-top: auto;
+  gap: 12px;
+  z-index: 10;
+}
+
+.task-footer-btn {
+  flex: 1;
+  height: 42px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .create-panel-header {
@@ -729,21 +739,24 @@
   cursor: pointer;
 }
 
-.create-task-form,
+.create-task-form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 0; /* Reset gap here, we'll use it in body */
+}
+
 .create-panel-body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-.create-task-form {
-  height: 100%;
-}
-
-.create-panel-body {
-  padding: 20px;
+  flex: 1;
   overflow-y: auto;
+  padding: 20px;
 }
+
+/* Combined into create-panel-body above */
 
 .form-group label,
 .detail-main-label,
